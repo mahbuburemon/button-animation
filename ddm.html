@@ -1,0 +1,2466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Liquid Water Button • Full Crystal Clear Glass UI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Plus+Jakarta+Sans:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM TOKENS & STUDIO PALETTE
+       ========================================================================== */
+    :root {
+      --font-title: 'Playfair Display', Georgia, serif;
+      --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+
+      /* Studio Light Theme */
+      --bg-gradient: radial-gradient(circle at 50% 30%, #f4f6fa 0%, #e3e7f0 60%, #d1d7e3 100%);
+      --title-color: #17171a;
+
+      /* Glass Slab Base Tray */
+      --tray-bg: rgba(255, 255, 255, 0.35);
+      --tray-border: rgba(255, 255, 255, 0.88);
+      --tray-shadow:
+        0 45px 90px -15px rgba(25, 35, 55, 0.16),
+        0 20px 40px -10px rgba(25, 35, 55, 0.1),
+        inset 0 2px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -2px 4px rgba(0, 20, 50, 0.04);
+
+      /* -----------------------------------------------------------------------
+         FULL CRYSTAL CLEAR CAPSULE PILLS (100% OPTICAL GLASS)
+         ----------------------------------------------------------------------- */
+      --pill-crystal-bg: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.18) 0%,
+          rgba(255, 255, 255, 0.02) 42%,
+          rgba(255, 255, 255, 0.08) 100%);
+      --pill-crystal-border: rgba(255, 255, 255, 0.65);
+      --pill-crystal-shadow:
+        0 16px 36px -8px rgba(20, 35, 60, 0.12),
+        0 4px 12px rgba(20, 35, 60, 0.05),
+        inset 0 1.5px 2.5px rgba(255, 255, 255, 0.85),
+        inset 0 -1.5px 2px rgba(0, 30, 70, 0.06),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.3);
+
+      --pill-text: #17171c;
+      --pill-text-sub: rgba(23, 23, 28, 0.6);
+
+      /* -----------------------------------------------------------------------
+         CRYSTAL WATER LIQUID COLOR PALETTES (PURE AQUATIC HYDRATION)
+         ----------------------------------------------------------------------- */
+      /* 1. Crystal Aqua Lagoon Water (Default Active for "Personal") */
+      --water-lagoon: linear-gradient(135deg, rgba(207, 250, 254, 0.92) 0%, rgba(56, 189, 248, 0.88) 32%, rgba(0, 210, 211, 0.9) 65%, rgba(2, 132, 199, 0.95) 100%);
+      --water-lagoon-glow: 0 22px 48px -8px rgba(0, 210, 211, 0.65), 0 8px 22px rgba(14, 165, 233, 0.4);
+
+      /* 2. Glacial Spring Arctic Water (For "Do Not Disturb") */
+      --water-glacial: linear-gradient(135deg, rgba(224, 242, 254, 0.92) 0%, rgba(125, 211, 252, 0.88) 35%, rgba(6, 182, 212, 0.9) 70%, rgba(8, 145, 178, 0.95) 100%);
+      --water-glacial-glow: 0 22px 48px -8px rgba(6, 182, 212, 0.6), 0 8px 22px rgba(56, 189, 248, 0.4);
+
+      /* 3. Deep Marine Ocean Water (For "Sleep") */
+      --water-ocean: linear-gradient(135deg, rgba(186, 230, 253, 0.92) 0%, rgba(14, 165, 233, 0.88) 35%, rgba(2, 132, 199, 0.9) 70%, rgba(3, 105, 161, 0.95) 100%);
+      --water-ocean-glow: 0 22px 48px -8px rgba(2, 132, 199, 0.65), 0 8px 22px rgba(14, 165, 233, 0.4);
+
+      /* 4. Honey Amber (Optional preset toggle) */
+      --water-amber: linear-gradient(135deg, rgba(255, 201, 119, 0.92) 0%, rgba(255, 165, 59, 0.9) 45%, rgba(242, 126, 19, 0.95) 100%);
+      --water-amber-glow: 0 18px 36px -8px rgba(20, 35, 60, 0.15), 0 6px 14px rgba(20, 35, 60, 0.08);
+
+      /* 3D Isometric View Parameters */
+      --base-rot-x: 48deg;
+      --base-rot-y: 0deg;
+      --base-rot-z: -38deg;
+      --tilt-x: 0deg;
+      --tilt-y: 0deg;
+      --spring-physics: cubic-bezier(0.2, 1, 0.3, 1);
+    }
+
+    /* Studio Dark Theme Variant */
+    [data-theme="dark"] {
+      --bg-gradient: radial-gradient(circle at 50% 30%, #0f172a 0%, #080d1a 60%, #03060c 100%);
+      --title-color: #f1f5f9;
+      --tray-bg: rgba(255, 255, 255, 0.05);
+      --tray-border: rgba(255, 255, 255, 0.16);
+      --tray-shadow:
+        0 45px 90px -15px rgba(0, 0, 0, 0.8),
+        0 20px 40px -10px rgba(0, 0, 0, 0.6),
+        inset 0 2px 4px rgba(255, 255, 255, 0.22),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.5);
+
+      --pill-crystal-bg: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.08) 0%,
+          rgba(255, 255, 255, 0.01) 42%,
+          rgba(255, 255, 255, 0.05) 100%);
+      --pill-crystal-border: rgba(255, 255, 255, 0.18);
+      --pill-crystal-shadow:
+        0 16px 36px -8px rgba(0, 0, 0, 0.6),
+        0 4px 12px rgba(0, 0, 0, 0.35),
+        inset 0 1.5px 2px rgba(255, 255, 255, 0.25),
+        inset 0 -1.5px 2px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+
+      --pill-text: #ffffff;
+      --pill-text-sub: rgba(255, 255, 255, 0.65);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      font-family: var(--font-ui);
+      background: var(--bg-gradient);
+      color: var(--title-color);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      transition: background 0.6s ease, color 0.6s ease;
+    }
+
+    /* ==========================================================================
+       TOP BAR & CONTROLS
+       ========================================================================== */
+    .top-controls {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 24px 0;
+      gap: 12px;
+      z-index: 20;
+    }
+
+    .badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--pill-text);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    [data-theme="dark"] .badge-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #38bdf8;
+    }
+
+    .badge-pill .water-drop-icon {
+      color: #0284c7;
+      font-size: 13px;
+    }
+
+    .actions-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .action-btn {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 7px 15px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      color: var(--pill-text);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+      transition: all 0.25s ease;
+    }
+
+    [data-theme="dark"] .action-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    }
+
+    .action-btn:hover {
+      transform: translateY(-1.5px);
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    }
+
+    [data-theme="dark"] .action-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .action-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #0284c7;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.4);
+    }
+
+    .action-btn svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    /* Record Video Action Button */
+    .action-btn.record-btn {
+      background: #ef4444;
+      color: #ffffff;
+      border-color: #ef4444;
+      box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);
+    }
+
+    .action-btn.record-btn:hover {
+      background: #dc2626;
+      box-shadow: 0 6px 20px rgba(239, 68, 68, 0.55);
+    }
+
+    .action-btn.record-btn.recording {
+      background: #b91c1c;
+      animation: recordPulse 1.5s infinite ease-in-out;
+    }
+
+    @keyframes recordPulse {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+      }
+
+      50% {
+        box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+      }
+    }
+
+    /* 9:16 Instagram Reel Canvas Framing */
+    .reel-frame-container {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+    }
+
+    .reel-frame-container.format-916 {
+      width: min(400px, 94vw);
+      height: 760px;
+      border-radius: 46px;
+      background: var(--bg-gradient);
+      border: 4px solid rgba(255, 255, 255, 0.6);
+      box-shadow:
+        0 35px 80px -15px rgba(0, 0, 0, 0.45),
+        0 0 0 8px rgba(255, 255, 255, 0.12),
+        inset 0 2px 4px rgba(255, 255, 255, 0.8);
+      overflow: hidden;
+      justify-content: space-evenly;
+      padding: 24px 16px 36px;
+      position: relative;
+    }
+
+    [data-theme="dark"] .reel-frame-container.format-916 {
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow:
+        0 35px 80px -15px rgba(0, 0, 0, 0.8),
+        0 0 0 8px rgba(255, 255, 255, 0.05),
+        inset 0 2px 4px rgba(255, 255, 255, 0.15);
+    }
+
+    .reel-dynamic-island {
+      display: none;
+      width: 96px;
+      height: 24px;
+      border-radius: 999px;
+      background: #000000;
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 50;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    }
+
+    .reel-frame-container.format-916 .reel-dynamic-island {
+      display: block;
+    }
+
+    /* Live Recording HUD */
+    .recording-hud {
+      display: none;
+      position: fixed;
+      top: 80px;
+      left: 50%;
+      transform: translateX(-50%);
+      align-items: center;
+      gap: 10px;
+      padding: 8px 20px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.88);
+      backdrop-filter: blur(16px);
+      border: 1.5px solid rgba(239, 68, 68, 0.6);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 700;
+      color: #ef4444;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    .recording-hud.active {
+      display: flex;
+    }
+
+    .recording-hud .rec-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #ef4444;
+      box-shadow: 0 0 10px #ef4444;
+      animation: recordHudBlink 1.2s infinite ease;
+    }
+
+    @keyframes recordHudBlink {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.2;
+      }
+    }
+
+    /* 3-2-1 Countdown Overlay */
+    .countdown-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(16px);
+      z-index: 150;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .countdown-overlay.active {
+      display: flex;
+    }
+
+    .countdown-number {
+      font-size: 110px;
+      font-weight: 900;
+      font-family: var(--font-title);
+      color: #38bdf8;
+      text-shadow: 0 0 40px rgba(56, 189, 248, 0.8);
+      animation: countPulse 0.9s infinite ease;
+    }
+
+    @keyframes countPulse {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 0.9;
+      }
+    }
+
+    .countdown-label {
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* Video Review & Download Modal */
+    .video-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(20px);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .video-modal.active {
+      display: flex;
+    }
+
+    .video-modal-card {
+      width: min(460px, 94vw);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 28px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 35px 80px rgba(0, 0, 0, 0.85);
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+    }
+
+    .video-modal-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .video-modal-header h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .close-modal-btn {
+      all: unset;
+      cursor: pointer;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .close-modal-btn:hover {
+      color: #ffffff;
+    }
+
+    .video-preview-player {
+      width: 100%;
+      max-height: 420px;
+      border-radius: 18px;
+      background: #000000;
+      outline: none;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Thumbnail Cover Showcase & Selector */
+    .thumbnail-selector-section {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 18px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      box-sizing: border-box;
+    }
+
+    .thumb-section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .snap-frame-btn {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      background: rgba(245, 158, 11, 0.18);
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      border-radius: 999px;
+      color: #fbbf24;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .snap-frame-btn:hover {
+      background: rgba(245, 158, 11, 0.35);
+      border-color: #f59e0b;
+      color: #ffffff;
+      transform: scale(1.02);
+    }
+
+    .thumb-options-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .thumb-option {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      background: #000000;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .thumb-option:hover {
+      border-color: rgba(245, 158, 11, 0.6);
+      transform: translateY(-2px);
+    }
+
+    .thumb-option.active {
+      border-color: #f59e0b;
+      box-shadow: 0 0 16px rgba(245, 158, 11, 0.35);
+    }
+
+    .thumb-preview-img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      object-position: center 38%;
+      display: block;
+      transition: transform 0.3s ease;
+    }
+
+    .thumb-option:hover .thumb-preview-img {
+      transform: scale(1.04);
+    }
+
+    .thumb-info {
+      padding: 6px 8px;
+      background: rgba(15, 23, 42, 0.95);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .thumb-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .thumb-download-link {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      background: rgba(245, 158, 11, 0.22);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 6px;
+      color: #fbbf24;
+      font-size: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .thumb-download-link:hover {
+      background: #f59e0b;
+      color: #000000;
+    }
+
+    .modal-download-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .download-reel-btn {
+      all: unset;
+      box-sizing: border-box;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #0284c7;
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 13.5px;
+      padding: 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(2, 132, 199, 0.5);
+      transition: all 0.2s ease;
+      text-align: center;
+    }
+
+    .download-reel-btn:hover {
+      background: #0369a1;
+      transform: translateY(-1px);
+    }
+
+    .download-reel-btn.mp4-btn {
+      background: linear-gradient(135deg, #ec4899, #8b5cf6);
+      box-shadow: 0 4px 16px rgba(236, 72, 153, 0.4);
+    }
+
+    .download-reel-btn.mp4-btn:hover {
+      background: linear-gradient(135deg, #db2777, #7c3aed);
+      box-shadow: 0 6px 20px rgba(236, 72, 153, 0.6);
+    }
+
+    .download-mp4-header-btn {
+      text-decoration: none;
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.15), rgba(139, 92, 246, 0.2)) !important;
+      border-color: rgba(236, 72, 153, 0.45) !important;
+      color: #f472b6 !important;
+    }
+
+    .download-mp4-header-btn:hover {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.35), rgba(139, 92, 246, 0.4)) !important;
+      border-color: rgba(236, 72, 153, 0.8) !important;
+      color: #ffffff !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(236, 72, 153, 0.35);
+    }
+
+    .mp4-note {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.65);
+      font-family: 'JetBrains Mono', monospace;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    /* Water Theme Selector Segment */
+    .water-tone-bar {
+      display: flex;
+      align-items: center;
+      padding: 3px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+    }
+
+    [data-theme="dark"] .water-tone-bar {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .water-tone-btn {
+      all: unset;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
+      border-radius: 999px;
+      cursor: pointer;
+      color: var(--pill-text-sub);
+      transition: all 0.2s ease;
+    }
+
+    .water-tone-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+    }
+
+    /* ==========================================================================
+       MAIN TITLE (MATCHES THE SCREENSHOT)
+       ========================================================================== */
+    .title-wrapper {
+      margin-top: 32px;
+      margin-bottom: 20px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .main-title {
+      font-family: var(--font-title);
+      font-size: clamp(34px, 5.5vw, 52px);
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--title-color);
+      text-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    }
+
+    /* ==========================================================================
+       3D STAGE & ISOMETRIC RIG
+       ========================================================================== */
+    .stage-container {
+      position: relative;
+      width: 100%;
+      height: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      perspective: 1400px;
+      z-index: 5;
+    }
+
+    /* The 3D Glass Tray Rig */
+    .isometric-rig {
+      position: relative;
+      width: 420px;
+      transform-style: preserve-3d;
+      transform:
+        rotateX(calc(var(--base-rot-x) + var(--tilt-x))) rotateY(calc(var(--base-rot-y) + var(--tilt-y))) rotateZ(var(--base-rot-z));
+      transition: transform 0.2s ease-out;
+    }
+
+    .stage-container.flat-view .isometric-rig {
+      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.05);
+      transition: transform 0.6s var(--spring-physics);
+    }
+
+    /* Ground Floor Shadow Plate */
+    .isometric-rig::after {
+      content: '';
+      position: absolute;
+      inset: -15px -10px;
+      border-radius: 48px;
+      background: radial-gradient(ellipse at 50% 50%, rgba(20, 35, 60, 0.35) 0%, rgba(20, 35, 60, 0) 75%);
+      transform: translateZ(-35px) scale(1.1);
+      filter: blur(28px);
+      pointer-events: none;
+      z-index: -1;
+      opacity: 0.85;
+      transition: opacity 0.5s ease;
+    }
+
+    [data-theme="dark"] .isometric-rig::after {
+      opacity: 0.95;
+      background: radial-gradient(ellipse at 50% 50%, rgba(0, 0, 0, 0.8) 0%, transparent 75%);
+    }
+
+    /* The Physical Transparent Glass Slab / Tray */
+    .glass-tray {
+      position: relative;
+      width: 100%;
+      padding: 16px 16px 18px;
+      border-radius: 44px;
+      background: var(--tray-bg);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1.5px solid var(--tray-border);
+      box-shadow: var(--tray-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      transform-style: preserve-3d;
+      transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    /* Glass Slab Side Chamfer & Refraction Edge */
+    .glass-tray::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.8) 0%,
+          rgba(255, 255, 255, 0) 35%,
+          rgba(255, 255, 255, 0.3) 100%);
+      opacity: 0.85;
+    }
+
+    /* ==========================================================================
+       THE THREE CAPSULE PILLS (FULL CRYSTAL CLEAR GLASS OPTICS)
+       ========================================================================== */
+    .pill-button {
+      all: unset;
+      position: relative;
+      width: 100%;
+      height: 65px;
+      border-radius: 999px;
+      cursor: pointer;
+      overflow: hidden;
+
+      /* Full Crystal Clear Glass Background */
+      background: var(--pill-crystal-bg);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
+      border: 1px solid var(--pill-crystal-border);
+      box-shadow: var(--pill-crystal-shadow);
+
+      display: flex;
+      align-items: center;
+      transform: translateZ(12px);
+      transition:
+        transform 0.4s var(--spring-physics),
+        box-shadow 0.4s ease,
+        border-color 0.4s ease,
+        background 0.4s ease;
+      touch-action: manipulation;
+    }
+
+    /* Crystal Glass Optical Chamfer Sheen (Subtle Glass Highlight) */
+    .crystal-sheen {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      background: linear-gradient(165deg,
+          rgba(255, 255, 255, 0.45) 0%,
+          rgba(255, 255, 255, 0.08) 30%,
+          transparent 65%);
+      opacity: 0.35;
+      z-index: 2;
+      transition: opacity 0.4s ease;
+    }
+
+    /* Dual Inset Bevel Specular Arc (Razor-Sharp Top Edge) */
+    .crystal-bevel-specular {
+      position: absolute;
+      top: 1.5px;
+      left: 7%;
+      right: 7%;
+      height: 2px;
+      border-radius: 999px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+      pointer-events: none;
+      z-index: 5;
+      filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.7));
+    }
+
+    /* Prismatic Chromatic Edge Fringe (Pure Crystal Dispersion) */
+    .crystal-prismatic-rim {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      padding: 1px;
+      background: conic-gradient(from 210deg at 50% 50%,
+          rgba(56, 189, 248, 0.35) 0deg,
+          rgba(168, 85, 247, 0.25) 90deg,
+          rgba(244, 63, 94, 0.2) 180deg,
+          rgba(56, 189, 248, 0.35) 360deg);
+      mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+      -webkit-mask: linear-gradient(#000, #000) content-box, linear-gradient(#000, #000);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      opacity: 0.6;
+      z-index: 2;
+      transition: opacity 0.4s ease;
+    }
+
+    .pill-button:hover {
+      transform: translateZ(20px) scale(1.02);
+      border-color: rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 22px 42px -8px rgba(20, 35, 60, 0.22),
+        0 8px 18px rgba(20, 35, 60, 0.1),
+        inset 0 2.5px 4px rgba(255, 255, 255, 1),
+        inset 0 -2px 3px rgba(0, 30, 70, 0.12),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+    }
+
+    .pill-button:hover .crystal-sheen {
+      opacity: 1;
+    }
+
+    .pill-button:hover .crystal-prismatic-rim {
+      opacity: 0.95;
+    }
+
+    /* Active Capsule Transformation */
+    .pill-button.active {
+      transform: translateZ(26px) scale(1.03);
+      border-color: rgba(255, 255, 255, 0.98);
+    }
+
+    /* Dynamic Water Glow Reactions */
+    .pill-button[data-id="personal"].active {
+      box-shadow:
+        var(--water-lagoon-glow),
+        inset 0 2.5px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -3px 6px rgba(2, 132, 199, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    .pill-button[data-id="dnd"].active {
+      box-shadow:
+        var(--water-glacial-glow),
+        inset 0 2.5px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -3px 6px rgba(8, 145, 178, 0.35),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    .pill-button[data-id="sleep"].active {
+      box-shadow:
+        var(--water-ocean-glow),
+        inset 0 2.5px 4px rgba(255, 255, 255, 0.95),
+        inset 0 -3px 6px rgba(3, 105, 161, 0.4),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.65);
+    }
+
+    /* Active Compression Feel */
+    .pill-button:active {
+      transform: translateZ(8px) scale(0.98);
+      transition: transform 0.08s ease;
+    }
+
+    /* --------------------------------------------------------------------------
+       VISCOUS WATER LIQUID FLUID LAYER (RUSHES INSIDE CRYSTAL CAPSULE)
+       -------------------------------------------------------------------------- */
+    .liquid-fluid {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition:
+        transform 0.65s cubic-bezier(0.34, 1.4, 0.64, 1),
+        opacity 0.35s ease;
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .pill-button[data-id="personal"] .liquid-fluid {
+      background: var(--water-lagoon);
+    }
+
+    .pill-button[data-id="dnd"] .liquid-fluid {
+      background: var(--water-glacial);
+    }
+
+    .pill-button[data-id="sleep"] .liquid-fluid {
+      background: var(--water-ocean);
+    }
+
+    .pill-button.active .liquid-fluid {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+
+    /* Water Caustic Light Shimmer Inside Fluid */
+    .water-caustic {
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background:
+        radial-gradient(circle at 25% 35%, rgba(255, 255, 255, 0.45) 0%, transparent 45%),
+        radial-gradient(circle at 75% 65%, rgba(255, 255, 255, 0.3) 0%, transparent 40%),
+        linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.15) 50%, transparent 100%);
+      mix-blend-mode: overlay;
+      animation: waterCausticBreathe 3.5s infinite alternate ease-in-out;
+      pointer-events: none;
+    }
+
+    @keyframes waterCausticBreathe {
+      0% {
+        transform: scale(1) translateX(0);
+        opacity: 0.6;
+      }
+
+      100% {
+        transform: scale(1.08) translateX(6px);
+        opacity: 0.95;
+      }
+    }
+
+    /* Micro Water Bubbles Floating in Fluid */
+    .water-bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.2) 70%, transparent 100%);
+      box-shadow: inset 0 0.5px 1px rgba(255, 255, 255, 0.9);
+      pointer-events: none;
+      animation: bubbleFloat 3s infinite ease-in-out;
+    }
+
+    .water-bubble.b1 {
+      width: 6px;
+      height: 6px;
+      left: 22%;
+      bottom: 18%;
+      animation-delay: 0s;
+    }
+
+    .water-bubble.b2 {
+      width: 4px;
+      height: 4px;
+      left: 45%;
+      bottom: 26%;
+      animation-delay: 0.8s;
+    }
+
+    .water-bubble.b3 {
+      width: 5px;
+      height: 5px;
+      left: 78%;
+      bottom: 20%;
+      animation-delay: 1.6s;
+    }
+
+    @keyframes bubbleFloat {
+
+      0%,
+      100% {
+        transform: translateY(0) scale(1);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: translateY(-5px) scale(1.15);
+        opacity: 0.85;
+      }
+    }
+
+    /* Water Meniscus Highlight (Top Reflection Arc) */
+    .liquid-fluid::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 52%;
+      border-radius: 999px 999px 0 0;
+      background: linear-gradient(180deg,
+          rgba(255, 255, 255, 0.78) 0%,
+          rgba(255, 255, 255, 0.25) 55%,
+          transparent 100%);
+      pointer-events: none;
+    }
+
+    /* Water Leading Wave Edge (Fluid meniscus swelling on entry) */
+    .liquid-fluid::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      bottom: 2px;
+      right: 0;
+      width: 22px;
+      border-radius: 999px;
+      background: radial-gradient(circle at 100% 50%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.2) 70%, transparent 100%);
+      filter: blur(1px);
+    }
+
+    /* Dynamic Sweeping Glass Glint */
+    .glass-glint {
+      position: absolute;
+      top: 0;
+      left: -80%;
+      width: 50%;
+      height: 100%;
+      background: linear-gradient(110deg,
+          transparent 0%,
+          rgba(255, 255, 255, 0.05) 30%,
+          rgba(255, 255, 255, 0.9) 50%,
+          transparent 75%);
+      transform: skewX(-26deg);
+      pointer-events: none;
+      z-index: 3;
+      opacity: 0;
+    }
+
+    .pill-button.active .glass-glint {
+      animation: sweepReflection 0.9s ease forwards;
+    }
+
+    @keyframes sweepReflection {
+      0% {
+        transform: skewX(-26deg) translateX(0);
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 0.95;
+      }
+
+      100% {
+        transform: skewX(-26deg) translateX(480%);
+        opacity: 0;
+      }
+    }
+
+    /* --------------------------------------------------------------------------
+       PILL CONTENT & TYPOGRAPHY
+       -------------------------------------------------------------------------- */
+    .pill-content {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      padding: 0 22px;
+      gap: 16px;
+      transform: translateZ(16px);
+    }
+
+    /* Left Icon (Framed Focal Glass Badge) */
+    .pill-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 1.5px rgba(255, 255, 255, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0f172a;
+      flex-shrink: 0;
+      transition: transform 0.4s var(--spring-physics), color 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+      filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.8));
+    }
+
+    [data-theme="dark"] .pill-icon {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.16);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.7));
+    }
+
+    .pill-button:hover .pill-icon {
+      transform: scale(1.08);
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    [data-theme="dark"] .pill-button:hover .pill-icon {
+      background: rgba(255, 255, 255, 0.16);
+    }
+
+    .pill-button.active .pill-icon {
+      transform: scale(1.1);
+      color: #02203b;
+      background: rgba(255, 255, 255, 0.88);
+      border-color: rgba(255, 255, 255, 1);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), inset 0 1.5px 2.5px rgba(255, 255, 255, 1);
+      filter: drop-shadow(0 1px 3px rgba(255, 255, 255, 0.75));
+    }
+
+    [data-theme="dark"] .pill-button.active .pill-icon {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.38);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.45);
+      filter: drop-shadow(0 2px 8px rgba(2, 20, 50, 0.75));
+    }
+
+    .pill-icon svg {
+      width: 22px;
+      height: 22px;
+      fill: currentColor;
+    }
+
+    /* Middle Label (Bold, High-Contrast & Focused Typography) */
+    .pill-label {
+      font-size: 17.5px;
+      font-weight: 700;
+      letter-spacing: -0.015em;
+      color: #0f172a;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.9);
+      transition: transform 0.3s ease, color 0.3s ease, font-size 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    [data-theme="dark"] .pill-label {
+      color: #ffffff;
+      text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.9);
+    }
+
+    .pill-button.active .pill-label {
+      color: #02203b;
+      font-size: 18px;
+      font-weight: 800;
+      text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85), 0 0 10px rgba(255, 255, 255, 0.4);
+    }
+
+    [data-theme="dark"] .pill-button.active .pill-label {
+      color: #ffffff;
+      font-size: 18px;
+      font-weight: 800;
+      text-shadow: 0 2px 8px rgba(2, 20, 45, 0.95), 0 0 14px rgba(56, 189, 248, 0.45);
+    }
+
+    /* Right More Dots (...) */
+    .pill-dots {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 7px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+
+    .pill-dots:hover {
+      background: rgba(255, 255, 255, 0.35);
+      transform: scale(1.05);
+    }
+
+    [data-theme="dark"] .pill-dots:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .pill-dots span {
+      width: 4.5px;
+      height: 4.5px;
+      border-radius: 50%;
+      background: #0f172a;
+      box-shadow: 0 1px 1.5px rgba(255, 255, 255, 0.7);
+      transition: transform 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    [data-theme="dark"] .pill-dots span {
+      background: #ffffff;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+    }
+
+    .pill-button:hover .pill-dots span {
+      transform: scale(1.2);
+    }
+
+    .pill-button.active .pill-dots span {
+      background: #02203b;
+    }
+
+    [data-theme="dark"] .pill-button.active .pill-dots span {
+      background: #ffffff;
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.85);
+    }
+
+    /* --------------------------------------------------------------------------
+       INSTAGRAM REEL MOUSE POINTER (Matches Reference Screenshot)
+       -------------------------------------------------------------------------- */
+    .demo-cursor {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 34px;
+      height: 34px;
+      pointer-events: none;
+      z-index: 100;
+      transform: translate3d(260px, 210px, 45px);
+      transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.3s ease;
+      filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+      opacity: 1;
+    }
+
+    .demo-cursor svg {
+      width: 30px;
+      height: 30px;
+      fill: #0f172a;
+      stroke: #ffffff;
+      stroke-width: 1.6;
+    }
+
+    /* Cursor Click Bounce */
+    .demo-cursor.clicking {
+      transform: scale(0.82);
+    }
+
+    /* ==========================================================================
+       BOTTOM HINT & FOOTER
+       ========================================================================== */
+    .instruction-bar {
+      margin-top: 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 22px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--pill-text-sub);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+      z-index: 10;
+    }
+
+    [data-theme="dark"] .instruction-bar {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .instruction-bar strong {
+      color: var(--title-color);
+      font-weight: 700;
+    }
+
+    /* ==========================================================================
+       VIDEO FOOTER SHOWCASE CODE CARD (Instagram Reel Code Card)
+       ========================================================================== */
+    .video-footer-card {
+      width: min(450px, 94%);
+      margin-top: 14px;
+      margin-bottom: 12px;
+      padding: 0;
+      border-radius: 22px;
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      box-shadow:
+        0 20px 45px -10px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(255, 255, 255, 0.1),
+        inset 0 1px 2px rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      transition: all 0.4s var(--spring-physics);
+      z-index: 15;
+      position: relative;
+    }
+
+    [data-theme="dark"] .video-footer-card {
+      background: rgba(10, 15, 30, 0.88);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow:
+        0 25px 55px -12px rgba(0, 0, 0, 0.9),
+        0 0 35px rgba(56, 189, 248, 0.12),
+        inset 0 1px 2px rgba(255, 255, 255, 0.12);
+    }
+
+    .code-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 11px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .code-window-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .code-window-dots {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .code-window-dots .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .code-window-dots .dot.red {
+      background: #ef4444;
+    }
+
+    .code-window-dots .dot.yellow {
+      background: #f59e0b;
+    }
+
+    .code-window-dots .dot.green {
+      background: #10b981;
+    }
+
+    .code-file-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.75);
+      letter-spacing: 0.02em;
+    }
+
+    .copy-code-btn {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.85);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .copy-code-btn:hover {
+      background: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+      border-color: rgba(255, 255, 255, 0.28);
+    }
+
+    .copy-code-btn.copied {
+      background: rgba(16, 185, 129, 0.25);
+      border-color: rgba(16, 185, 129, 0.6);
+      color: #34d399;
+    }
+
+    .code-snippet-body {
+      padding: 12px 16px;
+      text-align: left;
+    }
+
+    .code-snippet-body pre {
+      margin: 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11.5px;
+      line-height: 1.6;
+      overflow-x: auto;
+    }
+
+    .code-snippet-body code {
+      font-family: inherit;
+    }
+
+    .c-selector {
+      color: #38bdf8;
+      font-weight: 700;
+    }
+
+    .c-prop {
+      color: #c084fc;
+      font-weight: 500;
+    }
+
+    .c-val {
+      color: #fbbf24;
+      font-weight: 600;
+    }
+
+    .code-card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 16px 11px;
+      background: rgba(0, 0, 0, 0.15);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .code-tags {
+      display: flex;
+      gap: 6px;
+    }
+
+    .card-tag {
+      font-size: 10px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.85);
+    }
+
+    .card-fps-badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: #f59e0b;
+      letter-spacing: 0.04em;
+    }
+
+    /* Accessibility reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Navigation & Interactive Controls -->
+  <header class="top-controls">
+    <div class="badge-pill">
+      <span class="water-drop-icon">💧</span>
+      <span>Crystal Clear Glass UI</span>
+    </div>
+
+    <!-- Water Tone Preset Selector -->
+    <div class="water-tone-bar" role="radiogroup" aria-label="Water color tones">
+      <button class="water-tone-btn active" id="toneAqua" title="Crystal Aqua Water">Aqua Water</button>
+      <button class="water-tone-btn" id="toneOcean" title="Deep Oceanic Azure">Ocean Water</button>
+      <button class="water-tone-btn" id="toneGlacial" title="Glacial Arctic Stream">Glacial Water</button>
+      <button class="water-tone-btn" id="toneAmber" title="Sunset Amber Gold">Amber Honey</button>
+    </div>
+
+    <div class="actions-group">
+      <!-- 3D vs Flat View Toggle -->
+      <button id="viewToggle" class="action-btn" title="Toggle 3D Perspective">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path
+            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+          </path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        <span id="viewLabel">3D View</span>
+      </button>
+
+      <!-- Light / Dark Mode Toggle -->
+      <button id="themeToggle" class="action-btn" title="Toggle Studio Light/Dark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <span id="themeLabel">Light</span>
+      </button>
+
+      <!-- Auto-Play Demo Reel (Perfect for Screen Recording) -->
+      <button id="autoReelBtn" class="action-btn active" title="Loop Instagram Reel Auto Demonstration">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span id="autoReelLabel">Reel: Running</span>
+      </button>
+
+      <!-- 9:16 Instagram Reel Mobile Frame Toggle -->
+      <button id="frame916Btn" class="action-btn" title="Toggle 9:16 Instagram Reel Mobile View">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="3" ry="3"></rect>
+          <line x1="12" y1="18" x2="12.01" y2="18"></line>
+        </svg>
+        <span id="frameBtnLabel">9:16 Frame</span>
+      </button>
+
+      <!-- Watch Pre-rendered Video Button -->
+      <button id="watchVideoBtn" class="action-btn" title="Watch Instagram Reel Video"
+        style="background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(234, 88, 12, 0.2)); border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <polygon points="5 3 19 12 5 21 5 3"></polygon>
+        </svg>
+        <span>Watch Video</span>
+      </button>
+
+      <!-- 1-Click Video Recording Button -->
+      <button id="recordVideoBtn" class="action-btn record-btn" title="Record 60FPS Video for Instagram">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="12" cy="12" r="8"></circle>
+        </svg>
+        <span id="recordBtnLabel">Record Video</span>
+      </button>
+
+      <!-- Direct Download Pre-rendered 1080x1920 MP4 -->
+      <a id="downloadMp4DirectBtn" href="liquid_button_instagram_reel.mp4" download="liquid_button_instagram_reel.mp4"
+        class="action-btn download-mp4-header-btn" title="Download Ready-To-Upload 1080x1920 MP4 Video for Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Download MP4</span>
+      </a>
+
+      <!-- Direct Download Instagram Cover Thumbnail -->
+      <a id="downloadThumbBtn" href="liquid_button_thumbnail.jpg" download="liquid_button_thumbnail.jpg"
+        class="action-btn" title="Download High-Res 1080x1920 Instagram Reel Cover Thumbnail"
+        style="text-decoration: none; background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fbbf24;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <circle cx="8.5" cy="8.5" r="1.5"></circle>
+          <polyline points="21 15 16 10 5 21"></polyline>
+        </svg>
+        <span>Thumbnail</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Live Recording HUD -->
+  <div class="recording-hud" id="recordingHud">
+    <span class="rec-dot"></span>
+    <span id="recTimerText">REC 00:00 / 00:09</span>
+  </div>
+
+  <!-- 3-2-1 Countdown Overlay -->
+  <div class="countdown-overlay" id="countdownOverlay">
+    <div class="countdown-number" id="countdownNumber">3</div>
+    <div class="countdown-label">Recording Starts In...</div>
+  </div>
+
+  <!-- Video Review & Download Modal -->
+  <div class="video-modal" id="videoModal">
+    <div class="video-modal-card">
+      <div class="video-modal-header">
+        <h3>🎬 Instagram Reel Video Ready!</h3>
+        <button class="close-modal-btn" id="closeModalBtn" title="Close">✕</button>
+      </div>
+      <video class="video-preview-player" id="videoPreviewPlayer" poster="liquid_button_thumbnail_3d.jpg" controls
+        autoplay loop playsinline></video>
+
+      <!-- Cover Thumbnail Showcase & Selector -->
+      <div class="thumbnail-selector-section">
+        <div class="thumb-section-header">
+          <span>🖼️ Choose Cover Thumbnail (1080x1920)</span>
+          <button class="snap-frame-btn" id="snapFrameBtn" title="Snap current paused video frame as custom thumbnail">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+              <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span>Snap Current Frame</span>
+          </button>
+        </div>
+        <div class="thumb-options-grid">
+          <div class="thumb-option active" id="thumbOption3D" data-thumb="liquid_button_thumbnail_3d.jpg"
+            title="Click to preview & use 3D Cover">
+            <img src="liquid_button_thumbnail_3d.jpg" alt="3D Amber Thumbnail" class="thumb-preview-img">
+            <div class="thumb-info">
+              <span class="thumb-badge">✨ 3D Amber Cover</span>
+              <a href="liquid_button_thumbnail_3d.jpg" download="liquid_button_thumbnail_3d.jpg"
+                class="thumb-download-link" title="Download 3D Cover (1080x1920)">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                JPG
+              </a>
+            </div>
+          </div>
+          <div class="thumb-option" id="thumbOptionFlat" data-thumb="liquid_button_thumbnail_flat.jpg"
+            title="Click to preview & use Flat Dark Cover">
+            <img src="liquid_button_thumbnail_flat.jpg" alt="Flat Dark Thumbnail" class="thumb-preview-img">
+            <div class="thumb-info">
+              <span class="thumb-badge">🌙 Flat Dark Cover</span>
+              <a href="liquid_button_thumbnail_flat.jpg" download="liquid_button_thumbnail_flat.jpg"
+                class="thumb-download-link" title="Download Flat Dark Cover (1080x1920)">
+                <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                JPG
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-download-actions">
+        <a class="download-reel-btn" id="downloadReelBtn" download="liquid-button-instagram-reel.webm">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Download Recorded Video (.webm)</span>
+        </a>
+        <a class="download-reel-btn mp4-btn" href="liquid_button_instagram_reel.mp4"
+          download="liquid_button_instagram_reel.mp4">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Direct Download 1080x1920 MP4 (Instagram Reels Ready)</span>
+        </a>
+        <a class="download-reel-btn thumb-btn" href="liquid_button_thumbnail.jpg" download="liquid_button_thumbnail.jpg"
+          style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg>
+          <span>Download Cover Thumbnail (1080x1920 JPG)</span>
+        </a>
+      </div>
+      <div class="mp4-note">
+        💡 <strong>Instagram Reel & Cover Ready:</strong> 1080x1920 MP4 video and high-res cover thumbnail saved in your
+        project folder!
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Canvas / Reel Frame Container -->
+  <div class="reel-frame-container" id="reelFrameContainer">
+    <div class="reel-dynamic-island"></div>
+
+    <!-- Big Serif Title From Screenshot -->
+    <div class="title-wrapper">
+      <h1 class="main-title">LIQUID BUTTON</h1>
+    </div>
+
+    <!-- The 3D Stage with Glass Tray & Full Crystal Clear Capsule Buttons -->
+    <main class="stage-container" id="stageContainer">
+      <div class="isometric-rig" id="isometricRig">
+        <div class="glass-tray">
+
+          <!-- Button 1: Sleep (Full Crystal Clear Glass) -->
+          <button class="pill-button" data-id="sleep" type="button" aria-label="Sleep Mode">
+            <span class="crystal-sheen"></span>
+            <span class="crystal-bevel-specular"></span>
+            <span class="crystal-prismatic-rim"></span>
+            <span class="liquid-fluid">
+              <span class="water-caustic"></span>
+              <span class="water-bubble b1"></span>
+              <span class="water-bubble b2"></span>
+              <span class="water-bubble b3"></span>
+            </span>
+            <span class="glass-glint"></span>
+            <div class="pill-content">
+              <span class="pill-icon">
+                <!-- Bed Icon -->
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M4 19h16v-2H4v2zm16-8h-8V7H4v8h16v-4zM6 9.5c0-.83.67-1.5 1.5-1.5S9 8.67 9 9.5 8.33 11 7.5 11 6 10.33 6 9.5z" />
+                </svg>
+              </span>
+              <span class="pill-label">Sleep</span>
+              <div class="pill-dots"><span></span><span></span><span></span></div>
+            </div>
+          </button>
+
+          <!-- Button 2: Do Not Disturb (Full Crystal Clear Glass) -->
+          <button class="pill-button" data-id="dnd" type="button" aria-label="Do Not Disturb Mode">
+            <span class="crystal-sheen"></span>
+            <span class="crystal-bevel-specular"></span>
+            <span class="crystal-prismatic-rim"></span>
+            <span class="liquid-fluid">
+              <span class="water-caustic"></span>
+              <span class="water-bubble b1"></span>
+              <span class="water-bubble b2"></span>
+              <span class="water-bubble b3"></span>
+            </span>
+            <span class="glass-glint"></span>
+            <div class="pill-content">
+              <span class="pill-icon">
+                <!-- Crescent Moon Icon -->
+                <svg viewBox="0 0 24 24">
+                  <path d="M12.3 2a10 10 0 0 0-.19 2 10 10 0 0 0 10 10 10 10 0 0 0 2-.2 10 10 0 1 1-11.81-11.8z" />
+                </svg>
+              </span>
+              <span class="pill-label">Do Not Disturb</span>
+              <div class="pill-dots"><span></span><span></span><span></span></div>
+            </div>
+          </button>
+
+          <!-- Button 3: Personal (Full Crystal Clear Glass with Active Liquid Water) -->
+          <button class="pill-button active" data-id="personal" type="button" aria-label="Personal Mode">
+            <span class="crystal-sheen"></span>
+            <span class="crystal-bevel-specular"></span>
+            <span class="crystal-prismatic-rim"></span>
+            <span class="liquid-fluid">
+              <span class="water-caustic"></span>
+              <span class="water-bubble b1"></span>
+              <span class="water-bubble b2"></span>
+              <span class="water-bubble b3"></span>
+            </span>
+            <span class="glass-glint"></span>
+            <div class="pill-content">
+              <span class="pill-icon">
+                <!-- Person Silhouette Icon -->
+                <svg viewBox="0 0 24 24">
+                  <path
+                    d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                </svg>
+              </span>
+              <span class="pill-label">Personal</span>
+              <div class="pill-dots"><span></span><span></span><span></span></div>
+            </div>
+          </button>
+
+        </div>
+
+        <!-- Animated Instagram Reel Mouse Pointer Cursor -->
+        <div class="demo-cursor" id="demoCursor">
+          <svg viewBox="0 0 24 24">
+            <path d="M4 3l15 9-7 2-4 7-4-18z" />
+          </svg>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Video Footer Code Showcase Card -->
+    <div class="video-footer-card code-card" id="videoFooterCard">
+      <div class="code-card-header">
+        <div class="code-window-left">
+          <div class="code-window-dots">
+            <span class="dot red"></span>
+            <span class="dot yellow"></span>
+            <span class="dot green"></span>
+          </div>
+          <span class="code-file-name">liquid-crystal.css</span>
+        </div>
+        <button class="copy-code-btn" id="copyCodeBtn" type="button" title="Copy CSS Code">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          <span id="copyBtnText">Copy Code</span>
+        </button>
+      </div>
+      <div class="code-snippet-body">
+        <pre><code><span class="c-selector">.liquid-capsule</span> {
+  <span class="c-prop">background</span>: <span class="c-val">rgba(255, 255, 255, 0.08)</span>;
+  <span class="c-prop">backdrop-filter</span>: <span class="c-val">blur(24px)</span>;
+  <span class="c-prop">border</span>: <span class="c-val">1.5px solid rgba(255, 255, 255, 0.5)</span>;
+  <span class="c-prop">--liquid-honey</span>: <span class="c-val">linear-gradient(135deg, #fef3c7, #f59e0b)</span>;
+}</code></pre>
+      </div>
+      <div class="code-card-footer">
+        <div class="code-tags">
+          <span class="card-tag">🍯 Amber Honey</span>
+          <span class="card-tag">✨ CSS 3D Glass</span>
+          <span class="card-tag">🌗 Dark Mode</span>
+        </div>
+        <span class="card-fps-badge">60 FPS • Sound On 🔊</span>
+      </div>
+    </div>
+
+    <!-- Interactive Hint Bar -->
+    <div class="instruction-bar">
+      <span>Full Crystal Clear Capsules • Click to pour viscous water into transparent glass chamber</span>
+    </div>
+
+  </div> <!-- End of reel-frame-container -->
+
+  <!-- Audio & Interaction Script Engine -->
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const stageContainer = document.getElementById('stageContainer');
+      const isometricRig = document.getElementById('isometricRig');
+      const pills = Array.from(document.querySelectorAll('.pill-button'));
+      const demoCursor = document.getElementById('demoCursor');
+      const reelFrameContainer = document.getElementById('reelFrameContainer');
+
+      const viewToggle = document.getElementById('viewToggle');
+      const viewLabel = document.getElementById('viewLabel');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeLabel = document.getElementById('themeLabel');
+      const autoReelBtn = document.getElementById('autoReelBtn');
+      const autoReelLabel = document.getElementById('autoReelLabel');
+
+      const frame916Btn = document.getElementById('frame916Btn');
+      const frameBtnLabel = document.getElementById('frameBtnLabel');
+      const watchVideoBtn = document.getElementById('watchVideoBtn');
+      const recordVideoBtn = document.getElementById('recordVideoBtn');
+      const recordBtnLabel = document.getElementById('recordBtnLabel');
+      const recordingHud = document.getElementById('recordingHud');
+      const recTimerText = document.getElementById('recTimerText');
+      const countdownOverlay = document.getElementById('countdownOverlay');
+      const countdownNumber = document.getElementById('countdownNumber');
+
+      const videoModal = document.getElementById('videoModal');
+      const closeModalBtn = document.getElementById('closeModalBtn');
+      const videoPreviewPlayer = document.getElementById('videoPreviewPlayer');
+      const downloadReelBtn = document.getElementById('downloadReelBtn');
+
+      const toneAqua = document.getElementById('toneAqua');
+      const toneOcean = document.getElementById('toneOcean');
+      const toneGlacial = document.getElementById('toneGlacial');
+      const toneAmber = document.getElementById('toneAmber');
+      const toneButtons = [toneAqua, toneOcean, toneGlacial, toneAmber];
+
+      let is3D = true;
+      let isDark = false;
+      let autoReelRunning = true;
+      let reelCycleIndex = 2; // Starts on 'personal'
+      let reelTimer = null;
+
+      // ========================================================================
+      // Web Audio API for Aquatic Water Droplet Sound
+      // ========================================================================
+      let audioCtx = null;
+      function playWaterDropletSound() {
+        try {
+          if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          }
+          if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+          }
+          const now = audioCtx.currentTime;
+
+          // Realistic water drop "bloop / plink"
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+
+          osc.frequency.setValueAtTime(620, now);
+          osc.frequency.exponentialRampToValueAtTime(1150, now + 0.06);
+          osc.frequency.exponentialRampToValueAtTime(880, now + 0.16);
+
+          gain.gain.setValueAtTime(0.09, now);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.22);
+        } catch (e) {
+          // Audio deferral
+        }
+      }
+
+      // ========================================================================
+      // Theme Controller (Automatic Dark Mode on 2nd Capsule)
+      // ========================================================================
+      function setStudioTheme(mode) {
+        if (mode === 'dark') {
+          isDark = true;
+          root.setAttribute('data-theme', 'dark');
+          themeLabel.textContent = 'Dark';
+          themeToggle.classList.add('active');
+        } else {
+          isDark = false;
+          root.removeAttribute('data-theme');
+          themeLabel.textContent = 'Light';
+          themeToggle.classList.remove('active');
+        }
+      }
+
+      // ========================================================================
+      // Pill Activation Logic
+      // ========================================================================
+      function activatePill(pill, triggerSound = true) {
+        pills.forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        if (triggerSound) playWaterDropletSound();
+
+        // When 2nd capsule (Do Not Disturb) is clicked -> automatically change to dark mode!
+        const pillId = pill.getAttribute('data-id');
+        if (pillId === 'dnd') {
+          setStudioTheme('dark');
+        } else {
+          setStudioTheme('light');
+        }
+
+        // Move demo cursor smoothly to point at the three dots of the active pill
+        positionCursorOverPill(pill);
+      }
+
+      function positionCursorOverPill(pill, clickBounce = true) {
+        const pillIndex = pills.indexOf(pill);
+        const topOffsets = [36, 122, 210]; // Exact Y offsets for Sleep, DnD, Personal
+        const targetY = topOffsets[pillIndex] !== undefined ? topOffsets[pillIndex] : 36;
+        const targetX = 260; // Positioned right on the capsule between label and dots
+
+        demoCursor.style.transition = 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1)';
+        demoCursor.style.transform = `translate3d(${targetX}px, ${targetY}px, 45px) scale(1)`;
+
+        if (clickBounce) {
+          setTimeout(() => {
+            demoCursor.style.transition = 'transform 0.12s ease-out';
+            demoCursor.style.transform = `translate3d(${targetX}px, ${targetY}px, 32px) scale(0.82)`;
+            setTimeout(() => {
+              demoCursor.style.transition = 'transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1)';
+              demoCursor.style.transform = `translate3d(${targetX}px, ${targetY}px, 45px) scale(1)`;
+            }, 140);
+          }, 240);
+        }
+      }
+
+      // Initialize cursor position on default active pill ('personal')
+      setTimeout(() => {
+        positionCursorOverPill(pills[2]);
+      }, 300);
+
+      pills.forEach((pill, idx) => {
+        pill.addEventListener('click', (e) => {
+          stopAutoReel();
+          activatePill(pill, true);
+        });
+
+        pill.addEventListener('pointerenter', () => {
+          if (!autoReelRunning) {
+            positionCursorOverPill(pill);
+          }
+        });
+      });
+
+      // ========================================================================
+      // 3D Mouse Gyro Parallax
+      // ========================================================================
+      stageContainer.addEventListener('pointermove', (e) => {
+        if (!is3D) return;
+        const rect = stageContainer.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5;
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
+
+        const tiltX = (-y * 14).toFixed(2);
+        const tiltY = (x * 14).toFixed(2);
+
+        root.style.setProperty('--tilt-x', `${tiltX}deg`);
+        root.style.setProperty('--tilt-y', `${tiltY}deg`);
+      });
+
+      stageContainer.addEventListener('pointerleave', () => {
+        root.style.setProperty('--tilt-x', '0deg');
+        root.style.setProperty('--tilt-y', '0deg');
+      });
+
+      // ========================================================================
+      // View Toggle (3D Isometric vs Flat)
+      // ========================================================================
+      viewToggle.addEventListener('click', () => {
+        is3D = !is3D;
+        stageContainer.classList.toggle('flat-view', !is3D);
+        viewLabel.textContent = is3D ? '3D View' : 'Flat View';
+        viewToggle.classList.toggle('active', !is3D);
+        playWaterDropletSound();
+      });
+
+      // ========================================================================
+      // Theme Toggle Button
+      // ========================================================================
+      themeToggle.addEventListener('click', () => {
+        setStudioTheme(isDark ? 'light' : 'dark');
+        playWaterDropletSound();
+      });
+
+      // ========================================================================
+      // Water Color Tone Switching
+      // ========================================================================
+      function setWaterTone(tone, btn) {
+        toneButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        if (tone === 'aqua') {
+          root.style.setProperty('--water-lagoon', 'linear-gradient(135deg, rgba(207, 250, 254, 0.92) 0%, rgba(56, 189, 248, 0.88) 32%, rgba(0, 210, 211, 0.9) 65%, rgba(2, 132, 199, 0.95) 100%)');
+          root.style.setProperty('--water-lagoon-glow', '0 22px 48px -8px rgba(0, 210, 211, 0.65), 0 8px 22px rgba(14, 165, 233, 0.4)');
+          root.style.setProperty('--water-glacial', 'linear-gradient(135deg, rgba(224, 242, 254, 0.92) 0%, rgba(125, 211, 252, 0.88) 35%, rgba(6, 182, 212, 0.9) 70%, rgba(8, 145, 178, 0.95) 100%)');
+          root.style.setProperty('--water-glacial-glow', '0 22px 48px -8px rgba(6, 182, 212, 0.6), 0 8px 22px rgba(56, 189, 248, 0.4)');
+          root.style.setProperty('--water-ocean', 'linear-gradient(135deg, rgba(186, 230, 253, 0.92) 0%, rgba(14, 165, 233, 0.88) 35%, rgba(2, 132, 199, 0.9) 70%, rgba(3, 105, 161, 0.95) 100%)');
+          root.style.setProperty('--water-ocean-glow', '0 22px 48px -8px rgba(2, 132, 199, 0.65), 0 8px 22px rgba(14, 165, 233, 0.4)');
+        } else if (tone === 'ocean') {
+          root.style.setProperty('--water-lagoon', 'linear-gradient(135deg, rgba(125, 211, 252, 0.92) 0%, rgba(2, 132, 199, 0.88) 45%, rgba(3, 105, 161, 0.9) 80%, rgba(12, 74, 110, 0.95) 100%)');
+          root.style.setProperty('--water-lagoon-glow', '0 22px 48px -8px rgba(2, 132, 199, 0.7), 0 8px 22px rgba(3, 105, 161, 0.45)');
+          root.style.setProperty('--water-glacial', 'linear-gradient(135deg, rgba(56, 189, 248, 0.92) 0%, rgba(2, 132, 199, 0.88) 50%, rgba(7, 89, 133, 0.95) 100%)');
+          root.style.setProperty('--water-glacial-glow', '0 22px 48px -8px rgba(7, 89, 133, 0.6), 0 8px 22px rgba(12, 74, 110, 0.4)');
+          root.style.setProperty('--water-ocean', 'linear-gradient(135deg, rgba(186, 230, 253, 0.92) 0%, rgba(3, 105, 161, 0.88) 60%, rgba(8, 47, 73, 0.95) 100%)');
+          root.style.setProperty('--water-ocean-glow', '0 22px 48px -8px rgba(3, 105, 161, 0.65), 0 8px 22px rgba(8, 47, 73, 0.4)');
+        } else if (tone === 'glacial') {
+          root.style.setProperty('--water-lagoon', 'linear-gradient(135deg, rgba(240, 253, 250, 0.92) 0%, rgba(94, 234, 212, 0.88) 40%, rgba(13, 148, 136, 0.9) 80%, rgba(17, 94, 89, 0.95) 100%)');
+          root.style.setProperty('--water-lagoon-glow', '0 22px 48px -8px rgba(20, 184, 166, 0.65), 0 8px 22px rgba(13, 148, 136, 0.4)');
+          root.style.setProperty('--water-glacial', 'linear-gradient(135deg, rgba(204, 251, 241, 0.92) 0%, rgba(45, 212, 191, 0.88) 50%, rgba(15, 118, 110, 0.95) 100%)');
+          root.style.setProperty('--water-glacial-glow', '0 22px 48px -8px rgba(15, 118, 110, 0.6), 0 8px 22px rgba(19, 78, 74, 0.4)');
+          root.style.setProperty('--water-ocean', 'linear-gradient(135deg, rgba(153, 246, 228, 0.92) 0%, rgba(20, 184, 166, 0.88) 50%, rgba(19, 78, 74, 0.95) 100%)');
+          root.style.setProperty('--water-ocean-glow', '0 22px 48px -8px rgba(20, 184, 166, 0.65), 0 8px 22px rgba(13, 148, 136, 0.4)');
+        } else if (tone === 'amber') {
+          // Warm Golden Honey Topaz (Personal)
+          root.style.setProperty('--water-lagoon', 'linear-gradient(135deg, rgba(254, 243, 199, 0.95) 0%, rgba(245, 158, 11, 0.92) 45%, rgba(217, 119, 6, 0.96) 100%)');
+          root.style.setProperty('--water-lagoon-glow', '0 18px 36px -8px rgba(20, 35, 60, 0.16), 0 6px 14px rgba(20, 35, 60, 0.08)');
+          // Deep Cognac Honey Amber (Do Not Disturb)
+          root.style.setProperty('--water-glacial', 'linear-gradient(135deg, rgba(253, 230, 138, 0.95) 0%, rgba(217, 119, 6, 0.92) 50%, rgba(180, 83, 9, 0.98) 100%)');
+          root.style.setProperty('--water-glacial-glow', '0 18px 36px -8px rgba(20, 35, 60, 0.16), 0 6px 14px rgba(20, 35, 60, 0.08)');
+          // Sun-Drenched Nectar Honey (Sleep)
+          root.style.setProperty('--water-ocean', 'linear-gradient(135deg, rgba(255, 237, 213, 0.95) 0%, rgba(249, 115, 22, 0.9) 45%, rgba(194, 65, 12, 0.95) 100%)');
+          root.style.setProperty('--water-ocean-glow', '0 18px 36px -8px rgba(20, 35, 60, 0.16), 0 6px 14px rgba(20, 35, 60, 0.08)');
+        }
+        playWaterDropletSound();
+      }
+
+      toneAqua.addEventListener('click', () => setWaterTone('aqua', toneAqua));
+      toneOcean.addEventListener('click', () => setWaterTone('ocean', toneOcean));
+      toneGlacial.addEventListener('click', () => setWaterTone('glacial', toneGlacial));
+      toneAmber.addEventListener('click', () => setWaterTone('amber', toneAmber));
+
+      // ========================================================================
+      // Instagram Reel Auto Demonstration Loop
+      // ========================================================================
+      function startAutoReel() {
+        autoReelRunning = true;
+        autoReelBtn.classList.add('active');
+        autoReelLabel.textContent = 'Reel: Running';
+
+        // Set Crystal Aqua Water as default active tone
+        setWaterTone('aqua', toneAqua);
+        if (is3D) {
+          is3D = false;
+          stageContainer.classList.add('flat-view');
+          viewLabel.textContent = 'Flat View';
+          viewToggle.classList.add('active');
+        }
+
+        const cycleOrder = ['sleep', 'dnd', 'personal'];
+        let seqIndex = 0;
+
+        const firstPill = document.querySelector(`.pill-button[data-id="${cycleOrder[seqIndex]}"]`);
+        if (firstPill) activatePill(firstPill, true);
+
+        reelTimer = setInterval(() => {
+          seqIndex = (seqIndex + 1) % cycleOrder.length;
+          const targetPill = document.querySelector(`.pill-button[data-id="${cycleOrder[seqIndex]}"]`);
+          if (targetPill) activatePill(targetPill, true);
+        }, 2200);
+      }
+
+      function stopAutoReel() {
+        if (!autoReelRunning) return;
+        autoReelRunning = false;
+        clearInterval(reelTimer);
+        autoReelBtn.classList.remove('active');
+        autoReelLabel.textContent = 'Auto Reel';
+      }
+
+      autoReelBtn.addEventListener('click', () => {
+        if (autoReelRunning) {
+          stopAutoReel();
+        } else {
+          startAutoReel();
+        }
+      });
+
+      // ========================================================================
+      // 9:16 Instagram Reel Mobile Frame Toggle
+      // ========================================================================
+      let is916 = false;
+      frame916Btn.addEventListener('click', () => {
+        is916 = !is916;
+        reelFrameContainer.classList.toggle('format-916', is916);
+        frame916Btn.classList.toggle('active', is916);
+        frameBtnLabel.textContent = is916 ? 'Full Screen' : '9:16 Frame';
+      });
+
+      // ========================================================================
+      // In-Browser High-Definition Video Recording Engine
+      // ========================================================================
+      let mediaRecorder = null;
+      let recordedChunks = [];
+      let recordingTimer = null;
+      let recSeconds = 0;
+      const MAX_REC_SECONDS = 9;
+
+      async function startVideoRecording() {
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          stopVideoRecording();
+          return;
+        }
+
+        // Seamless fallback: If getDisplayMedia is unsupported (e.g. Chrome file:// restriction)
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getDisplayMedia) {
+          openVideoPreviewModal();
+          return;
+        }
+
+        try {
+          // Switch into 9:16 Instagram format
+          if (!is916) {
+            is916 = true;
+            reelFrameContainer.classList.add('format-916');
+            frame916Btn.classList.add('active');
+            frameBtnLabel.textContent = 'Full Screen';
+          }
+
+          const stream = await navigator.mediaDevices.getDisplayMedia({
+            video: {
+              displaySurface: 'browser',
+              frameRate: { ideal: 60, max: 60 },
+              width: { ideal: 1080 },
+              height: { ideal: 1920 }
+            },
+            audio: false
+          });
+
+          // Countdown 3-2-1
+          countdownOverlay.classList.add('active');
+          let count = 3;
+          countdownNumber.textContent = count;
+
+          const countTimer = setInterval(() => {
+            count--;
+            if (count > 0) {
+              countdownNumber.textContent = count;
+            } else {
+              clearInterval(countTimer);
+              countdownOverlay.classList.remove('active');
+              beginRecordingPipeline(stream);
+            }
+          }, 900);
+
+        } catch (err) {
+          console.warn('Live screen capture could not start, presenting Instagram Reel MP4:', err);
+          recordVideoBtn.classList.remove('recording');
+          recordBtnLabel.textContent = 'Record Video';
+          openVideoPreviewModal();
+        }
+      }
+
+      function openVideoPreviewModal() {
+        videoPreviewPlayer.src = 'liquid_button_instagram_reel.mp4';
+        videoPreviewPlayer.poster = 'liquid_button_thumbnail.jpg';
+        downloadReelBtn.href = 'liquid_button_instagram_reel.mp4';
+        downloadReelBtn.download = 'liquid_button_instagram_reel.mp4';
+        videoModal.classList.add('active');
+        videoPreviewPlayer.play().catch(() => { });
+      }
+
+      function beginRecordingPipeline(stream) {
+        if (!autoReelRunning) {
+          startAutoReel();
+        }
+
+        recordedChunks = [];
+        let mimeType = 'video/webm;codecs=vp9';
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm;codecs=vp8';
+        }
+        if (!MediaRecorder.isTypeSupported(mimeType)) {
+          mimeType = 'video/webm';
+        }
+
+        try {
+          mediaRecorder = new MediaRecorder(stream, {
+            mimeType: mimeType,
+            videoBitsPerSecond: 10000000
+          });
+        } catch (e) {
+          mediaRecorder = new MediaRecorder(stream);
+        }
+
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) {
+            recordedChunks.push(e.data);
+          }
+        };
+
+        mediaRecorder.onstop = () => {
+          finishRecordingSession(stream);
+        };
+
+        const videoTrack = stream.getVideoTracks()[0];
+        if (videoTrack) {
+          videoTrack.onended = () => {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+              stopVideoRecording();
+            }
+          };
+        }
+
+        mediaRecorder.start(250);
+
+        recordVideoBtn.classList.add('recording');
+        recordBtnLabel.textContent = 'Stop Recording';
+        recordingHud.classList.add('active');
+        recSeconds = 0;
+        recTimerText.textContent = 'REC 00:00 / 00:09';
+
+        recordingTimer = setInterval(() => {
+          recSeconds++;
+          const formatted = String(recSeconds).padStart(2, '0');
+          recTimerText.textContent = `REC 00:${formatted} / 00:09`;
+
+          if (recSeconds >= MAX_REC_SECONDS) {
+            stopVideoRecording();
+          }
+        }, 1000);
+      }
+
+      function stopVideoRecording() {
+        if (recordingTimer) {
+          clearInterval(recordingTimer);
+          recordingTimer = null;
+        }
+        if (mediaRecorder && mediaRecorder.state === 'recording') {
+          mediaRecorder.stop();
+        }
+        recordVideoBtn.classList.remove('recording');
+        recordBtnLabel.textContent = 'Record Video';
+        recordingHud.classList.remove('active');
+      }
+
+      function finishRecordingSession(stream) {
+        if (stream) {
+          stream.getTracks().forEach(t => t.stop());
+        }
+
+        const blob = new Blob(recordedChunks, { type: recordedChunks[0]?.type || 'video/webm' });
+        const videoUrl = URL.createObjectURL(blob);
+
+        videoPreviewPlayer.src = videoUrl;
+        downloadReelBtn.href = videoUrl;
+        downloadReelBtn.download = `liquid-button-instagram-reel-${Date.now()}.webm`;
+
+        // Auto trigger download for user convenience
+        const autoLink = document.createElement('a');
+        autoLink.href = videoUrl;
+        autoLink.download = downloadReelBtn.download;
+        document.body.appendChild(autoLink);
+        autoLink.click();
+        document.body.removeChild(autoLink);
+
+        videoModal.classList.add('active');
+      }
+
+      recordVideoBtn.addEventListener('click', startVideoRecording);
+      if (watchVideoBtn) {
+        watchVideoBtn.addEventListener('click', openVideoPreviewModal);
+      }
+
+      closeModalBtn.addEventListener('click', () => {
+        videoModal.classList.remove('active');
+        videoPreviewPlayer.pause();
+      });
+
+      videoModal.addEventListener('click', (e) => {
+        if (e.target === videoModal) {
+          videoModal.classList.remove('active');
+          videoPreviewPlayer.pause();
+        }
+      });
+
+      // Thumbnail Cover Selection & Custom Frame Snap
+      const thumbOption3D = document.getElementById('thumbOption3D');
+      const thumbOptionFlat = document.getElementById('thumbOptionFlat');
+      const snapFrameBtn = document.getElementById('snapFrameBtn');
+      const thumbOptions = [thumbOption3D, thumbOptionFlat];
+
+      function setActiveThumbnail(selectedOpt, imagePath) {
+        thumbOptions.forEach(opt => {
+          if (opt) opt.classList.remove('active');
+        });
+        if (selectedOpt) selectedOpt.classList.add('active');
+        videoPreviewPlayer.poster = imagePath;
+        const mainThumbBtn = document.getElementById('downloadThumbBtn');
+        if (mainThumbBtn) {
+          mainThumbBtn.href = imagePath;
+          mainThumbBtn.download = imagePath;
+        }
+      }
+
+      if (thumbOption3D) {
+        thumbOption3D.addEventListener('click', (e) => {
+          if (e.target.closest('.thumb-download-link')) return; // Allow direct download click
+          setActiveThumbnail(thumbOption3D, 'liquid_button_thumbnail_3d.jpg');
+        });
+      }
+
+      if (thumbOptionFlat) {
+        thumbOptionFlat.addEventListener('click', (e) => {
+          if (e.target.closest('.thumb-download-link')) return; // Allow direct download click
+          setActiveThumbnail(thumbOptionFlat, 'liquid_button_thumbnail_flat.jpg');
+        });
+      }
+
+      if (snapFrameBtn) {
+        snapFrameBtn.addEventListener('click', () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoPreviewPlayer.videoWidth || 1080;
+            canvas.height = videoPreviewPlayer.videoHeight || 1920;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(videoPreviewPlayer, 0, 0, canvas.width, canvas.height);
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.95);
+
+            // Update player poster to custom snapped thumbnail
+            videoPreviewPlayer.poster = dataUrl;
+
+            // Trigger download
+            const snapLink = document.createElement('a');
+            snapLink.href = dataUrl;
+            snapLink.download = `liquid_button_custom_thumbnail_${Date.now()}.jpg`;
+            document.body.appendChild(snapLink);
+            snapLink.click();
+            document.body.removeChild(snapLink);
+
+            // Feedback on button
+            const originalHtml = snapFrameBtn.innerHTML;
+            snapFrameBtn.innerHTML = '<span>✓ Snapped!</span>';
+            snapFrameBtn.style.background = 'rgba(16, 185, 129, 0.3)';
+            snapFrameBtn.style.color = '#34d399';
+            setTimeout(() => {
+              snapFrameBtn.innerHTML = originalHtml;
+              snapFrameBtn.style.background = '';
+              snapFrameBtn.style.color = '';
+            }, 2000);
+          } catch (snapErr) {
+            console.warn('Could not snap video frame directly, downloading default thumbnail:', snapErr);
+            const defaultLink = document.createElement('a');
+            defaultLink.href = 'liquid_button_thumbnail.jpg';
+            defaultLink.download = 'liquid_button_thumbnail.jpg';
+            defaultLink.click();
+          }
+        });
+      }
+
+      // Copy CSS Code Handler
+      const copyCodeBtn = document.getElementById('copyCodeBtn');
+      const copyBtnText = document.getElementById('copyBtnText');
+      if (copyCodeBtn) {
+        copyCodeBtn.addEventListener('click', () => {
+          const cssCode = `.liquid-capsule {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(24px);
+  border: 1.5px solid rgba(255, 255, 255, 0.5);
+  --liquid-honey: linear-gradient(135deg, #fef3c7, #f59e0b);
+}`;
+          if (navigator.clipboard) {
+            navigator.clipboard.writeText(cssCode).then(() => {
+              copyCodeBtn.classList.add('copied');
+              if (copyBtnText) copyBtnText.textContent = 'Copied!';
+              setTimeout(() => {
+                copyCodeBtn.classList.remove('copied');
+                if (copyBtnText) copyBtnText.textContent = 'Copy Code';
+              }, 2000);
+            }).catch(() => { });
+          }
+        });
+      }
+
+      // Start auto reel presentation initially
+      startAutoReel();
+
+    })();
+  </script>
+</body>
+
+</html>
