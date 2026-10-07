@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphic OTP Verification</title>
+    <!-- Modern Typography: Inter + Space Grotesk -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        @property --border-angle {
+            syntax: "<angle>";
+            inherits: false;
+            initial-value: 0deg;
+        }
+
+        @keyframes rotateBorder {
+            0% {
+                --border-angle: 0deg;
+            }
+
+            100% {
+                --border-angle: 360deg;
+            }
+        }
+
+        :root {
+            --bg-base: #060913;
+            --card-bg: rgba(13, 20, 36, 0.65);
+            --card-border: rgba(99, 140, 212, 0.22);
+            --card-border-glow: rgba(56, 189, 248, 0.35);
+
+            --gold-primary: #ffb703;
+            --gold-light: #ffe066;
+            --gold-glow: rgba(255, 183, 3, 0.45);
+
+            --cyan-accent: #38bdf8;
+            --cyan-glow: rgba(56, 189, 248, 0.4);
+
+            --green-success: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.45);
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --box-bg: rgba(255, 255, 255, 0.04);
+            --box-border: rgba(148, 163, 184, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--bg-base);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: var(--text-main);
+            overflow-x: hidden;
+            position: relative;
+            padding: 28px 16px;
+        }
+
+        /* Cyber Ambient Background with glowing meshes and sweep lines */
+        .ambient-canvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .ambient-mesh {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.55;
+            animation: floatGlow 14s ease-in-out infinite alternate;
+        }
+
+        .mesh-1 {
+            width: 520px;
+            height: 520px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.35) 0%, rgba(3, 105, 161, 0.1) 60%, transparent 80%);
+            top: -100px;
+            left: -80px;
+        }
+
+        .mesh-2 {
+            width: 480px;
+            height: 480px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.28) 0%, rgba(217, 119, 6, 0.08) 60%, transparent 80%);
+            bottom: -120px;
+            right: -60px;
+            animation-duration: 18s;
+            animation-direction: alternate-reverse;
+        }
+
+        .mesh-3 {
+            width: 380px;
+            height: 380px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, transparent 70%);
+            bottom: 30%;
+            left: 20%;
+            opacity: 0.2;
+            transition: opacity 1s ease;
+        }
+
+        /* Subtle Cyber Beam Lines */
+        .cyber-line {
+            position: absolute;
+            height: 1px;
+            width: 160%;
+            left: -30%;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), rgba(255, 183, 3, 0.25), transparent);
+            transform: rotate(-28deg);
+            pointer-events: none;
+            animation: scanline 10s linear infinite;
+        }
+
+        .cyber-line-2 {
+            top: 70%;
+            transform: rotate(-28deg);
+            animation-delay: -5s;
+            opacity: 0.7;
+        }
+
+        @keyframes scanline {
+            0% {
+                transform: translateY(-120px) rotate(-28deg);
+                opacity: 0;
+            }
+
+            40% {
+                opacity: 0.8;
+            }
+
+            80% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(220px) rotate(-28deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes floatGlow {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(40px, 35px) scale(1.08);
+            }
+
+            100% {
+                transform: translate(-30px, 20px) scale(0.95);
+            }
+        }
+
+        /* Cyber Glassmorphic Container */
+        .card-wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 440px;
+        }
+
+        .card-glow-halo {
+            position: absolute;
+            inset: -2px;
+            border-radius: 32px;
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.35), rgba(56, 189, 248, 0.35), rgba(16, 185, 129, 0.1));
+            filter: blur(14px);
+            opacity: 0.45;
+            transition: all 0.6s ease;
+            z-index: -1;
+        }
+
+        .otp-card {
+            position: relative;
+            background: var(--card-bg);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: 30px;
+            padding: 44px 34px 36px;
+            text-align: center;
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.65),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15),
+                inset 0 0 20px rgba(255, 255, 255, 0.02);
+            transition: border-color 0.5s ease, box-shadow 0.5s ease;
+            overflow: hidden;
+        }
+
+        /* Dynamic Border Highlight on Top Edge */
+        .otp-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 15%;
+            right: 15%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+            pointer-events: none;
+        }
+
+        /* Top Status Icon Badge (Key Icon in Glowing Shield Pill) */
+        .badge-container {
+            margin-bottom: 22px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .status-badge {
+            position: relative;
+            width: 74px;
+            height: 74px;
+            border-radius: 24px;
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.15), rgba(56, 189, 248, 0.08));
+            border: 1px solid rgba(255, 183, 3, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 0 30px rgba(255, 183, 3, 0.2),
+                inset 0 0 15px rgba(255, 183, 3, 0.1);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            animation: badgeFloat 4s ease-in-out infinite alternate;
+        }
+
+        .status-badge svg {
+            width: 32px;
+            height: 32px;
+            fill: none;
+            stroke: var(--gold-primary);
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            filter: drop-shadow(0 0 8px rgba(255, 183, 3, 0.6));
+            transition: stroke 0.4s ease, filter 0.4s ease;
+        }
+
+        @keyframes badgeFloat {
+            0% {
+                transform: translateY(0);
+            }
+
+            100% {
+                transform: translateY(-4px);
+            }
+        }
+
+        /* Header & Titles */
+        .card-header-content {
+            margin-bottom: 28px;
+        }
+
+        .title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+            transition: color 0.4s ease;
+        }
+
+        .title .highlight {
+            color: var(--gold-primary);
+            text-shadow: 0 0 20px rgba(255, 183, 3, 0.35);
+            transition: color 0.4s ease, text-shadow 0.4s ease;
+        }
+
+        .subtitle {
+            font-size: 13.5px;
+            color: var(--text-muted);
+            line-height: 1.55;
+            max-width: 290px;
+            margin: 0 auto;
+            transition: color 0.4s ease;
+        }
+
+        /* Animation Stage Wrapper */
+        .stage-area {
+            position: relative;
+            min-height: 90px;
+            margin-bottom: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 1. Initial State: OTP Input Grid */
+        .otp-grid {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            width: 100%;
+            transition: opacity 0.3s ease;
+            position: relative;
+            z-index: 5;
+        }
+
+        .otp-box {
+            width: 62px;
+            height: 70px;
+            border-radius: 16px;
+            border: 1.5px solid var(--box-border);
+            background: var(--box-bg);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            color: #ffffff;
+            font-family: 'Space Grotesk', monospace;
+            font-size: 26px;
+            font-weight: 700;
+            text-align: center;
+            caret-color: var(--gold-primary);
+            outline: none;
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08);
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+
+        .otp-box::-webkit-outer-spin-button,
+        .otp-box::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .otp-box:hover:not(:focus):not(:disabled) {
+            border-color: rgba(255, 183, 3, 0.45);
+            background: rgba(255, 183, 3, 0.04);
+            box-shadow: 0 0 14px rgba(255, 183, 3, 0.18);
+        }
+
+        .otp-box:focus {
+            border: 1.5px solid transparent;
+            background:
+                linear-gradient(rgba(13, 20, 36, 0.92), rgba(13, 20, 36, 0.92)) padding-box,
+                conic-gradient(from var(--border-angle),
+                    transparent 0%,
+                    transparent 35%,
+                    rgba(255, 183, 3, 0.25) 50%,
+                    var(--gold-primary) 70%,
+                    var(--gold-light) 85%,
+                    #ffffff 90%,
+                    var(--gold-primary) 95%,
+                    transparent 100%) border-box;
+            box-shadow:
+                0 0 0 1px rgba(255, 183, 3, 0.25),
+                0 0 25px rgba(255, 183, 3, 0.4),
+                inset 0 1px 1px rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px) scale(1.03);
+            animation: rotateBorder 2s linear infinite;
+        }
+
+        .otp-box.filled {
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .otp-box:disabled {
+            cursor: not-allowed;
+        }
+
+        /* 2. Loading State: Square Formation & Center Merge Animation */
+        .is-loading .otp-grid {
+            pointer-events: none;
+        }
+
+        .is-loading .otp-box {
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* All 4 boxes animate smoothly into 2x2 square formation, then merge to center */
+        .is-loading .otp-box:nth-child(1) {
+            animation: boxSquareMerge1 1.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .is-loading .otp-box:nth-child(2) {
+            animation: boxSquareMerge2 1.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .is-loading .otp-box:nth-child(3) {
+            animation: boxSquareMerge3 1.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .is-loading .otp-box:nth-child(4) {
+            animation: boxSquareMerge4 1.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        /* Box 1 (Top-Left of square, then inward to center) */
+        @keyframes boxSquareMerge1 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                border-radius: 16px;
+                opacity: 1;
+                color: #ffffff;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            }
+
+            /* Step 1: Smoothly form Top-Left of the 2x2 square */
+            36% {
+                transform: translate(110%, -60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: #ffffff;
+                border-color: var(--gold-primary);
+                box-shadow: 0 0 24px var(--gold-glow), inset 0 0 12px rgba(255, 183, 3, 0.2);
+            }
+
+            /* Brief pause in square formation */
+            48% {
+                transform: translate(110%, -60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: rgba(255, 255, 255, 0.8);
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 28px var(--cyan-glow), inset 0 0 14px rgba(56, 189, 248, 0.25);
+            }
+
+            /* Step 2: Smoothly glide toward center */
+            78% {
+                transform: translate(155%, -16%) scale(0.6);
+                border-radius: 28px;
+                opacity: 0.9;
+                color: transparent;
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 35px var(--cyan-glow);
+            }
+
+            92% {
+                transform: translate(172%, -3%) scale(0.28);
+                border-radius: 40px;
+                opacity: 0.7;
+                color: transparent;
+                box-shadow: 0 0 40px var(--cyan-accent);
+            }
+
+            /* Fully merged at center */
+            100% {
+                transform: translate(175%, 0) scale(0);
+                border-radius: 50%;
+                opacity: 0;
+                color: transparent;
+                box-shadow: 0 0 45px var(--cyan-accent);
+            }
+        }
+
+        /* Box 2 (Top-Right of square, then inward to center) */
+        @keyframes boxSquareMerge2 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                border-radius: 16px;
+                opacity: 1;
+                color: #ffffff;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            }
+
+            /* Step 1: Smoothly form Top-Right of the 2x2 square */
+            36% {
+                transform: translate(125%, -60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: #ffffff;
+                border-color: var(--gold-primary);
+                box-shadow: 0 0 24px var(--gold-glow), inset 0 0 12px rgba(255, 183, 3, 0.2);
+            }
+
+            /* Brief pause in square formation */
+            48% {
+                transform: translate(125%, -60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: rgba(255, 255, 255, 0.8);
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 28px var(--cyan-glow), inset 0 0 14px rgba(56, 189, 248, 0.25);
+            }
+
+            /* Step 2: Smoothly glide toward center */
+            78% {
+                transform: translate(80%, -16%) scale(0.6);
+                border-radius: 28px;
+                opacity: 0.9;
+                color: transparent;
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 35px var(--cyan-glow);
+            }
+
+            92% {
+                transform: translate(63%, -3%) scale(0.28);
+                border-radius: 40px;
+                opacity: 0.7;
+                color: transparent;
+                box-shadow: 0 0 40px var(--cyan-accent);
+            }
+
+            /* Fully merged at center */
+            100% {
+                transform: translate(60%, 0) scale(0);
+                border-radius: 50%;
+                opacity: 0;
+                color: transparent;
+                box-shadow: 0 0 45px var(--cyan-accent);
+            }
+        }
+
+        /* Box 3 (Bottom-Left of square, then inward to center) */
+        @keyframes boxSquareMerge3 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                border-radius: 16px;
+                opacity: 1;
+                color: #ffffff;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            }
+
+            /* Step 1: Smoothly form Bottom-Left of the 2x2 square */
+            36% {
+                transform: translate(-125%, 60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: #ffffff;
+                border-color: var(--gold-primary);
+                box-shadow: 0 0 24px var(--gold-glow), inset 0 0 12px rgba(255, 183, 3, 0.2);
+            }
+
+            /* Brief pause in square formation */
+            48% {
+                transform: translate(-125%, 60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: rgba(255, 255, 255, 0.8);
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 28px var(--cyan-glow), inset 0 0 14px rgba(56, 189, 248, 0.25);
+            }
+
+            /* Step 2: Smoothly glide toward center */
+            78% {
+                transform: translate(-80%, 16%) scale(0.6);
+                border-radius: 28px;
+                opacity: 0.9;
+                color: transparent;
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 35px var(--cyan-glow);
+            }
+
+            92% {
+                transform: translate(-63%, 3%) scale(0.28);
+                border-radius: 40px;
+                opacity: 0.7;
+                color: transparent;
+                box-shadow: 0 0 40px var(--cyan-accent);
+            }
+
+            /* Fully merged at center */
+            100% {
+                transform: translate(-60%, 0) scale(0);
+                border-radius: 50%;
+                opacity: 0;
+                color: transparent;
+                box-shadow: 0 0 45px var(--cyan-accent);
+            }
+        }
+
+        /* Box 4 (Bottom-Right of square, then inward to center) */
+        @keyframes boxSquareMerge4 {
+            0% {
+                transform: translate(0, 0) scale(1);
+                border-radius: 16px;
+                opacity: 1;
+                color: #ffffff;
+                box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+            }
+
+            /* Step 1: Smoothly form Bottom-Right of the 2x2 square */
+            36% {
+                transform: translate(-110%, 60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: #ffffff;
+                border-color: var(--gold-primary);
+                box-shadow: 0 0 24px var(--gold-glow), inset 0 0 12px rgba(255, 183, 3, 0.2);
+            }
+
+            /* Brief pause in square formation */
+            48% {
+                transform: translate(-110%, 60%) scale(0.96);
+                border-radius: 18px;
+                opacity: 1;
+                color: rgba(255, 255, 255, 0.8);
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 28px var(--cyan-glow), inset 0 0 14px rgba(56, 189, 248, 0.25);
+            }
+
+            /* Step 2: Smoothly glide toward center */
+            78% {
+                transform: translate(-155%, 16%) scale(0.6);
+                border-radius: 28px;
+                opacity: 0.9;
+                color: transparent;
+                border-color: var(--cyan-accent);
+                box-shadow: 0 0 35px var(--cyan-glow);
+            }
+
+            92% {
+                transform: translate(-172%, 3%) scale(0.28);
+                border-radius: 40px;
+                opacity: 0.7;
+                color: transparent;
+                box-shadow: 0 0 40px var(--cyan-accent);
+            }
+
+            /* Fully merged at center */
+            100% {
+                transform: translate(-175%, 0) scale(0);
+                border-radius: 50%;
+                opacity: 0;
+                color: transparent;
+                box-shadow: 0 0 45px var(--cyan-accent);
+            }
+        }
+
+        /* Pulsing Circular Radar Effect during Loading */
+        .radar-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.6);
+            transition: opacity 0.45s ease 0.65s, transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.65s;
+            z-index: 2;
+        }
+
+        .is-loading .radar-container {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .radar-circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 1px solid rgba(56, 189, 248, 0.3);
+        }
+
+        .radar-circle-1 {
+            width: 140px;
+            height: 140px;
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            animation: radarRotate 6s linear infinite;
+        }
+
+        .radar-circle-2 {
+            width: 90px;
+            height: 90px;
+            border: 1px solid rgba(255, 183, 3, 0.5);
+            animation: radarPulse 1.6s ease-out infinite;
+        }
+
+        .radar-core {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--cyan-accent);
+            box-shadow:
+                0 0 15px var(--cyan-accent),
+                0 0 35px var(--cyan-accent);
+            animation: coreBreathe 1s ease-in-out infinite alternate;
+        }
+
+        .radar-beam {
+            position: absolute;
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, rgba(56, 189, 248, 0.4) 0deg, transparent 65deg, transparent 360deg);
+            animation: radarRotate 2s linear infinite;
+        }
+
+        @keyframes radarRotate {
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes radarPulse {
+            0% {
+                transform: scale(0.6);
+                opacity: 0.9;
+            }
+
+            100% {
+                transform: scale(1.6);
+                opacity: 0;
+            }
+        }
+
+        @keyframes coreBreathe {
+            0% {
+                transform: scale(0.85);
+                box-shadow: 0 0 10px var(--cyan-accent);
+            }
+
+            100% {
+                transform: scale(1.25);
+                box-shadow: 0 0 28px var(--cyan-accent), 0 0 50px var(--cyan-accent);
+            }
+        }
+
+        /* 3. Success State: Morph into Concentric Success Badge */
+        .success-badge-stage {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.3);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 10;
+        }
+
+        .is-success .success-badge-stage {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .is-success .otp-grid,
+        .is-success .radar-container {
+            display: none !important;
+        }
+
+        .concentric-badge {
+            position: relative;
+            width: 90px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .success-ring-outer {
+            position: absolute;
+            inset: -12px;
+            border-radius: 50%;
+            border: 2px dashed rgba(16, 185, 129, 0.5);
+            animation: radarRotate 10s linear infinite;
+        }
+
+        .success-ring-mid {
+            position: absolute;
+            inset: -4px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.6);
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+            animation: ringGlowPulse 2.5s ease-in-out infinite alternate;
+        }
+
+        .success-checkmark-circle {
+            position: relative;
+            z-index: 2;
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981, #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow:
+                0 0 30px rgba(16, 185, 129, 0.7),
+                0 0 60px rgba(16, 185, 129, 0.3);
+            animation: checkmarkPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .success-checkmark-circle svg {
+            width: 32px;
+            height: 32px;
+            fill: none;
+            stroke: #022013;
+            stroke-width: 3.2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        @keyframes checkmarkPop {
+            0% {
+                transform: scale(0) rotate(-45deg);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes ringGlowPulse {
+            0% {
+                transform: scale(0.98);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+        }
+
+        /* Interactive Action Button */
+        .btn-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        .primary-btn {
+            position: relative;
+            width: 100%;
+            height: 54px;
+            border-radius: 100px;
+            border: 1px solid var(--gold-light);
+            background: linear-gradient(135deg, #ffc000, #ffb703 40%, #fb8500);
+            color: #1a1001;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            outline: none;
+            box-shadow:
+                0 8px 25px rgba(255, 183, 3, 0.35),
+                inset 0 1px 1px rgba(255, 255, 255, 0.6);
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+
+        .primary-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow:
+                0 12px 32px rgba(255, 183, 3, 0.5),
+                0 0 20px rgba(255, 183, 3, 0.3),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8);
+        }
+
+        .primary-btn:active:not(:disabled) {
+            transform: translateY(1px);
+        }
+
+        /* Button Shine Sweep Effect */
+        .primary-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 60%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transform: skewX(-25deg);
+            transition: left 0.75s ease;
+        }
+
+        .primary-btn:hover:not(:disabled)::before {
+            left: 180%;
+        }
+
+        /* Button Loading State */
+        .is-loading .primary-btn {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.25), rgba(3, 105, 161, 0.4));
+            border-color: rgba(56, 189, 248, 0.6);
+            color: #ffffff;
+            box-shadow: 0 8px 25px rgba(56, 189, 248, 0.25);
+            cursor: wait;
+        }
+
+        /* Button Success State */
+        .is-success .primary-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-color: #34d399;
+            color: #022415;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.45);
+            cursor: default;
+        }
+
+        .btn-spinner {
+            display: none;
+            width: 18px;
+            height: 18px;
+            border: 2.5px solid rgba(255, 255, 255, 0.25);
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        .is-loading .btn-spinner {
+            display: inline-block;
+        }
+
+        .is-loading .btn-arrow {
+            display: none;
+        }
+
+        .is-success .btn-arrow {
+            display: none;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error Shake Animation */
+        @keyframes shakeCard {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            20% {
+                transform: translateX(-9px);
+            }
+
+            40% {
+                transform: translateX(8px);
+            }
+
+            60% {
+                transform: translateX(-5px);
+            }
+
+            80% {
+                transform: translateX(4px);
+            }
+        }
+
+        .shake {
+            animation: shakeCard 0.4s ease-in-out;
+        }
+
+        /* Status Toast Message */
+        .status-message {
+            min-height: 20px;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #f87171;
+            transition: all 0.3s ease;
+        }
+
+        /* Footer & Resend Countdown */
+        .card-footer {
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .resend-timer {
+            color: var(--gold-primary);
+            font-weight: 700;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: var(--gold-primary);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: underline;
+            text-underline-offset: 3px;
+            cursor: pointer;
+            display: inline-block;
+            margin-left: 4px;
+            transition: color 0.2s ease, opacity 0.2s ease;
+        }
+
+        .resend-btn:hover {
+            color: var(--gold-light);
+        }
+
+        .resend-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            text-decoration: none;
+        }
+
+        /* Reset / Try Again Link for Demo Testing */
+        .demo-controls {
+            margin-top: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Instagram Channel Badge */
+        .channel-badge {
+            margin-top: 18px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .insta-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 16px;
+            border-radius: 100px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+            border: 1px solid rgba(255, 183, 3, 0.35);
+            color: #ffffff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            text-decoration: none;
+            letter-spacing: 0.02em;
+            box-shadow:
+                0 4px 18px rgba(0, 0, 0, 0.3),
+                0 0 15px rgba(255, 183, 3, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .insta-link .insta-svg {
+            stroke: var(--gold-primary);
+            transition: stroke 0.3s ease, transform 0.3s ease;
+        }
+
+        .insta-link:hover {
+            border-color: var(--gold-primary);
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.18), rgba(255, 183, 3, 0.06));
+            color: var(--gold-light);
+            box-shadow:
+                0 6px 22px rgba(255, 183, 3, 0.35),
+                0 0 25px rgba(255, 183, 3, 0.25),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .insta-link:hover .insta-svg {
+            stroke: var(--gold-light);
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .reset-link {
+            color: var(--cyan-accent);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .reset-link:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        /* Dynamic Theme Adaptations for Success State */
+        .is-success .otp-card {
+            border-color: rgba(16, 185, 129, 0.4);
+            box-shadow:
+                0 30px 80px rgba(0, 0, 0, 0.65),
+                0 0 50px rgba(16, 185, 129, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .is-success .status-badge {
+            border-color: var(--green-success);
+            background: rgba(16, 185, 129, 0.12);
+            box-shadow: 0 0 35px rgba(16, 185, 129, 0.35);
+        }
+
+        .is-success .status-badge svg {
+            stroke: var(--green-success);
+            filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.7));
+        }
+
+        .is-success .title {
+            color: #ffffff;
+        }
+
+        .is-success .title .highlight {
+            color: var(--green-success);
+            text-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
+        }
+
+        .is-success .card-footer {
+            display: none;
+        }
+
+        /* Video / Showcase Layout Container */
+        .reel-container {
+            width: 100%;
+            max-width: 480px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Dedicated Code Snippet Card Below OTP Section - Compact & Subordinate */
+        .code-card-wrapper {
+            position: relative;
+            width: 86%;
+            max-width: 390px;
+            z-index: 10;
+        }
+
+        .code-glow-halo {
+            position: absolute;
+            inset: -2px;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(255, 183, 3, 0.18));
+            filter: blur(12px);
+            opacity: 0.3;
+            z-index: -1;
+            transition: all 0.5s ease;
+        }
+
+        .code-card {
+            background: rgba(13, 20, 36, 0.72);
+            backdrop-filter: blur(28px) saturate(180%);
+            -webkit-backdrop-filter: blur(28px) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 14px 16px 12px;
+            box-shadow:
+                0 16px 40px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            text-align: left;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20%;
+            right: 20%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.5), transparent);
+            pointer-events: none;
+        }
+
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .control-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .dot-red {
+            background: #ff5f56;
+        }
+
+        .dot-yellow {
+            background: #ffbd2e;
+        }
+
+        .dot-green {
+            background: #27c93f;
+        }
+
+        .code-title {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #94a3b8;
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.3px;
+        }
+
+        .code-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--gold-primary);
+            background: rgba(255, 183, 3, 0.12);
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 183, 3, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .code-body {
+            font-family: 'Fira Code', 'Cascadia Code', Consolas, monospace;
+            font-size: 12px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            background: rgba(6, 9, 19, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 14px;
+            padding: 14px 16px;
+            overflow-x: auto;
+        }
+
+        .code-body pre {
+            margin: 0;
+            font-family: inherit;
+        }
+
+        .code-body code {
+            font-family: inherit;
+        }
+
+        /* Syntax Highlighting */
+        .c-at {
+            color: #f43f5e;
+            font-weight: 600;
+        }
+
+        .c-prop {
+            color: var(--gold-primary);
+            font-weight: 600;
+        }
+
+        .c-attr {
+            color: #38bdf8;
+        }
+
+        .c-str {
+            color: #a7f3d0;
+        }
+
+        .c-val {
+            color: #c084fc;
+        }
+
+        .c-selector {
+            color: var(--gold-light);
+            font-weight: 700;
+        }
+
+        .c-func {
+            color: #60a5fa;
+        }
+
+        .c-var {
+            color: var(--gold-primary);
+        }
+
+        .c-color {
+            color: #f59e0b;
+        }
+
+        /* Dedicated Code Footer Card */
+        .code-footer-card {
+            margin-top: 14px;
+            padding: 12px 14px;
+            background: linear-gradient(135deg, rgba(255, 183, 3, 0.08), rgba(56, 189, 248, 0.05));
+            border: 1px solid rgba(255, 183, 3, 0.22);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .code-footer-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mini-insta-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            background: linear-gradient(135deg, #f09433, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            box-shadow: 0 4px 12px rgba(220, 39, 67, 0.35);
+            flex-shrink: 0;
+        }
+
+        .mini-insta-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .code-footer-channel {
+            font-size: 13px;
+            font-weight: 700;
+            color: #ffffff;
+            display: block;
+            line-height: 1.2;
+        }
+
+        .code-footer-tagline {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            display: block;
+            margin-top: 2px;
+        }
+
+        .code-footer-badges {
+            display: flex;
+            gap: 6px;
+        }
+
+        .tech-tag {
+            font-size: 10px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: rgba(56, 189, 248, 0.12);
+            color: var(--cyan-accent);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            letter-spacing: 0.3px;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 440px) {
+            .otp-card {
+                padding: 36px 20px 28px;
+                border-radius: 26px;
+            }
+
+            .otp-grid {
+                gap: 8px;
+            }
+
+            .otp-box {
+                width: 54px;
+                height: 64px;
+                font-size: 22px;
+                border-radius: 13px;
+            }
+
+            .title {
+                font-size: 25px;
+            }
+        }
+
+        /* High-Definition Instagram Reel Screen Optimization */
+        @media (min-width: 800px) and (min-height: 1200px) {
+            body {
+                padding: 40px 24px;
+            }
+
+            .reel-container {
+                max-width: 740px;
+                gap: 24px;
+            }
+
+            /* Grand Hero "Verify OTP" Card - Significantly Larger */
+            .card-wrapper {
+                max-width: 720px;
+                width: 100%;
+            }
+
+            .otp-card {
+                padding: 56px 44px 42px;
+                border-radius: 36px;
+            }
+
+            .status-badge {
+                width: 96px;
+                height: 96px;
+                border-radius: 30px;
+            }
+
+            .status-badge svg {
+                width: 44px;
+                height: 44px;
+            }
+
+            .title {
+                font-size: 40px;
+                letter-spacing: -0.5px;
+            }
+
+            .subtitle {
+                font-size: 16.5px;
+                margin-top: 10px;
+                margin-bottom: 32px;
+            }
+
+            .stage-area {
+                min-height: 104px;
+                margin-bottom: 32px;
+            }
+
+            .otp-grid {
+                gap: 18px;
+            }
+
+            .otp-box {
+                width: 88px;
+                height: 104px;
+                font-size: 40px;
+                border-radius: 20px;
+            }
+
+            .primary-btn {
+                height: 66px;
+                font-size: 18px;
+                border-radius: 20px;
+            }
+
+            .card-footer {
+                font-size: 15px;
+                margin-top: 22px;
+            }
+
+            .channel-badge {
+                margin-top: 18px;
+            }
+
+            .insta-link {
+                font-size: 14.5px;
+                padding: 9px 20px;
+                gap: 9px;
+            }
+
+            .demo-controls {
+                display: none !important;
+            }
+
+            /* Compact & Subordinate Code Card - Visibly Smaller */
+            .code-card-wrapper {
+                max-width: 540px;
+                width: 82%;
+            }
+
+            .code-card {
+                padding: 16px 20px 14px;
+                border-radius: 22px;
+            }
+
+            .code-header {
+                margin-bottom: 10px;
+                padding-bottom: 8px;
+            }
+
+            .control-dot {
+                width: 10px;
+                height: 10px;
+            }
+
+            .code-title {
+                font-size: 13px;
+            }
+
+            .code-title svg {
+                width: 14px;
+                height: 14px;
+            }
+
+            .code-badge {
+                font-size: 11px;
+                padding: 2px 8px;
+            }
+
+            .code-body {
+                font-size: 13px;
+                line-height: 1.5;
+                padding: 12px 16px;
+                border-radius: 14px;
+            }
+
+            .code-footer-card {
+                margin-top: 10px;
+                padding: 10px 14px;
+                border-radius: 12px;
+            }
+
+            .mini-insta-icon {
+                width: 30px;
+                height: 30px;
+                border-radius: 9px;
+            }
+
+            .mini-insta-icon svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .code-footer-channel {
+                font-size: 13.5px;
+            }
+
+            .code-footer-tagline {
+                font-size: 11px;
+            }
+
+            .tech-tag {
+                font-size: 11px;
+                padding: 3px 9px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Cyber Ambient Background -->
+    <div class="ambient-canvas" aria-hidden="true">
+        <div class="ambient-mesh mesh-1"></div>
+        <div class="ambient-mesh mesh-2"></div>
+        <div class="ambient-mesh mesh-3"></div>
+        <div class="cyber-line"></div>
+        <div class="cyber-line cyber-line-2"></div>
+    </div>
+
+    <!-- Reel Showcase Main Container -->
+    <div class="reel-container">
+        <!-- Main Component Container: Verify OTP -->
+        <div class="card-wrapper">
+            <div class="card-glow-halo" id="cardHalo"></div>
+
+            <main class="otp-card" id="otpCard" aria-live="polite">
+
+                <!-- Top Status Icon Badge -->
+                <div class="badge-container">
+                    <div class="status-badge" id="statusBadge" aria-hidden="true">
+                        <!-- Crisp Cyber Key / Shield SVG Icon -->
+                        <svg viewBox="0 0 24 24" id="badgeIcon">
+                            <path
+                                d="M21 2l-2 2m-1.5 1.5L16 7l1.5 1.5M14 9l1.5 1.5M9.5 13.5a5.5 5.5 0 1 1 7-7 5.5 5.5 0 0 1-7 7L3 20v2h2l1.5-1.5L8 22l3-3-1.5-1.5z">
+                            </path>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Header Titles -->
+                <header class="card-header-content">
+                    <h1 class="title" id="cardTitle">Verify <span class="highlight">OTP</span></h1>
+                    <p class="subtitle" id="cardSubtitle">
+                        Enter the 4-digit security code sent to your device
+                    </p>
+                </header>
+
+                <!-- Dynamic Interactive Animation Stage -->
+                <section class="stage-area" aria-label="One time password inputs">
+                    <!-- 1. Input Boxes -->
+                    <div class="otp-grid" id="otpGrid">
+                        <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                            autocomplete="one-time-code" aria-label="First digit" autofocus data-index="0">
+                        <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                            aria-label="Second digit" data-index="1">
+                        <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                            aria-label="Third digit" data-index="2">
+                        <input type="text" class="otp-box" inputmode="numeric" pattern="[0-9]*" maxlength="1"
+                            aria-label="Fourth digit" data-index="3">
+                    </div>
+
+                    <!-- 2. Loading Radar / Circular Pulse -->
+                    <div class="radar-container" id="radarContainer" aria-hidden="true">
+                        <div class="radar-circle radar-circle-1"></div>
+                        <div class="radar-circle radar-circle-2"></div>
+                        <div class="radar-beam"></div>
+                        <div class="radar-core"></div>
+                    </div>
+
+                    <!-- 3. Success Concentric Badge with Checkmark -->
+                    <div class="success-badge-stage" id="successStage" aria-hidden="true">
+                        <div class="concentric-badge">
+                            <div class="success-ring-outer"></div>
+                            <div class="success-ring-mid"></div>
+                            <div class="success-checkmark-circle">
+                                <svg viewBox="0 0 24 24">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Submit Button -->
+                <div class="btn-wrapper">
+                    <button type="button" class="primary-btn" id="submitBtn">
+                        <span class="btn-spinner" id="btnSpinner" aria-hidden="true"></span>
+                        <span id="btnLabel">Verify &amp; Proceed</span>
+                        <span class="btn-arrow" id="btnArrow" aria-hidden="true">→</span>
+                    </button>
+                </div>
+
+                <!-- Feedback / Error Message -->
+                <div class="status-message" id="statusMsg" role="status"></div>
+
+                <!-- Footer: Countdown & Resend Option -->
+                <footer class="card-footer" id="cardFooter">
+                    <span>Didn't receive the code?</span>
+                    <span id="timerContainer">Resend in <span class="resend-timer" id="timerValue">00:38</span></span>
+                    <button type="button" class="resend-btn" id="resendBtn" style="display: none;">Resend code</button>
+                </footer>
+
+                <!-- Instagram Channel Badge -->
+                <div class="channel-badge" id="channelBadge">
+                    <a href="https://instagram.com/Coders.Mahbubur" target="_blank" rel="noopener noreferrer"
+                        class="insta-link" title="Follow Coders.Mahbubur on Instagram">
+                        <svg class="insta-svg" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                        <span>Coders.Mahbubur</span>
+                    </a>
+                </div>
+
+            </main>
+        </div>
+
+        <!-- Dedicated Code Snippet Card Below OTP Section -->
+        <div class="code-card-wrapper" id="codeCardSection">
+            <div class="code-glow-halo"></div>
+            <div class="code-card">
+                <div class="code-header">
+                    <div class="window-controls">
+                        <span class="control-dot dot-red"></span>
+                        <span class="control-dot dot-yellow"></span>
+                        <span class="control-dot dot-green"></span>
+                    </div>
+                    <div class="code-title">
+                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <span>rotating-laser-border.css</span>
+                    </div>
+                    <span class="code-badge">CSS3</span>
+                </div>
+
+                <div class="code-body">
+                    <pre><code><span class="c-at">@property</span> <span class="c-prop">--border-angle</span> {
+  <span class="c-attr">syntax</span>: <span class="c-str">'&lt;angle&gt;'</span>; <span class="c-attr">inherits</span>: <span class="c-val">false</span>; <span class="c-attr">initial-value</span>: <span class="c-val">0deg</span>;
+}
+
+<span class="c-selector">.otp-box:focus</span> {
+  <span class="c-attr">border</span>: <span class="c-val">2px solid transparent</span>;
+  <span class="c-attr">background</span>: 
+    <span class="c-func">linear-gradient</span>(<span class="c-color">#0b1224</span>, <span class="c-color">#0b1224</span>) padding-box,
+    <span class="c-func">conic-gradient</span>(from <span class="c-var">var(--border-angle)</span>, <span class="c-color">#ffb703</span>, <span class="c-color">#ffe066</span>, <span class="c-color">#ffb703</span>) border-box;
+  <span class="c-attr">animation</span>: <span class="c-val">rotateBorder 2s linear infinite</span>;
+}</code></pre>
+                </div>
+
+                <!-- Dedicated Footer Card for Code Snippet Showcase -->
+                <div class="code-footer-card">
+                    <div class="code-footer-left">
+                        <div class="mini-insta-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </div>
+                        <div class="code-footer-text">
+                            <span class="code-footer-channel">Coders.Mahbubur</span>
+                            <span class="code-footer-tagline">Save &amp; Follow for Daily UI Magic</span>
+                        </div>
+                    </div>
+                    <div class="code-footer-badges">
+                        <span class="tech-tag">@property</span>
+                        <span class="tech-tag">Pure CSS</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modular State & Interaction Script -->
+    <script>
+        (() => {
+            "use strict";
+
+            // State constants
+            const STATE_INPUT = "input";
+            const STATE_LOADING = "loading";
+            const STATE_SUCCESS = "success";
+
+            // DOM Elements
+            const card = document.getElementById("otpCard");
+            const inputs = Array.from(document.querySelectorAll(".otp-box"));
+            const submitBtn = document.getElementById("submitBtn");
+            const btnLabel = document.getElementById("btnLabel");
+            const statusMsg = document.getElementById("statusMsg");
+            const cardTitle = document.getElementById("cardTitle");
+            const cardSubtitle = document.getElementById("cardSubtitle");
+            const timerValue = document.getElementById("timerValue");
+            const timerContainer = document.getElementById("timerContainer");
+            const resendBtn = document.getElementById("resendBtn");
+            const resetBtn = document.getElementById("resetBtn");
+            const demoControls = document.getElementById("demoControls");
+
+            // Config & State
+            const DEMO_OTP = "1234";
+            let currentState = STATE_INPUT;
+            let countdownSeconds = 38;
+            let countdownInterval = null;
+
+            // Helper to get joined 4-digit code
+            const getCurrentOtp = () => inputs.map(input => input.value.trim()).join("");
+
+            // Show Feedback Message
+            function setFeedback(msg, isError = true) {
+                statusMsg.textContent = msg;
+                statusMsg.style.color = isError ? "#f87171" : "var(--green-success)";
+            }
+
+            // Sync visual "filled" classes
+            function updateFilledStyles() {
+                inputs.forEach(input => {
+                    input.classList.toggle("filled", Boolean(input.value));
+                });
+            }
+
+            // Focus first empty box or last
+            function focusFirstEmpty() {
+                const empty = inputs.find(inp => !inp.value);
+                if (empty) empty.focus();
+                else inputs[inputs.length - 1].focus();
+            }
+
+            // Input handlers: auto-tabbing, backspace navigation, copy-paste
+            inputs.forEach((input, idx) => {
+                // Auto focus and select on click/focus
+                input.addEventListener("focus", () => {
+                    input.select();
+                });
+
+                input.addEventListener("input", (e) => {
+                    if (currentState !== STATE_INPUT) return;
+
+                    // Clean value to single numeric digit
+                    const clean = input.value.replace(/\D/g, "");
+                    input.value = clean ? clean.slice(-1) : "";
+
+                    updateFilledStyles();
+                    setFeedback("");
+
+                    // Advance focus to next input
+                    if (input.value && idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                        inputs[idx + 1].select();
+                    }
+
+                    // Auto-trigger when all 4 digits entered
+                    if (getCurrentOtp().length === 4) {
+                        handleVerification();
+                    }
+                });
+
+                input.addEventListener("keydown", (e) => {
+                    if (currentState !== STATE_INPUT) return;
+
+                    // Backspace navigation
+                    if (e.key === "Backspace") {
+                        if (!input.value && idx > 0) {
+                            inputs[idx - 1].focus();
+                            inputs[idx - 1].value = "";
+                            updateFilledStyles();
+                            e.preventDefault();
+                        }
+                    }
+
+                    // Arrow key navigation
+                    if (e.key === "ArrowLeft" && idx > 0) {
+                        e.preventDefault();
+                        inputs[idx - 1].focus();
+                    } else if (e.key === "ArrowRight" && idx < inputs.length - 1) {
+                        e.preventDefault();
+                        inputs[idx + 1].focus();
+                    }
+
+                    // Enter key submission
+                    if (e.key === "Enter") {
+                        e.preventDefault();
+                        handleVerification();
+                    }
+                });
+
+                // Copy-Paste support
+                input.addEventListener("paste", (e) => {
+                    if (currentState !== STATE_INPUT) return;
+                    e.preventDefault();
+
+                    const pastedData = (e.clipboardData || window.clipboardData).getData("text");
+                    const digits = pastedData.replace(/\D/g, "").slice(0, 4);
+
+                    if (!digits) return;
+
+                    digits.split("").forEach((d, i) => {
+                        if (inputs[i]) inputs[i].value = d;
+                    });
+
+                    updateFilledStyles();
+                    setFeedback("");
+
+                    if (digits.length === 4) {
+                        handleVerification();
+                    } else if (inputs[digits.length]) {
+                        inputs[digits.length].focus();
+                    }
+                });
+            });
+
+            // Submit Button Click
+            submitBtn.addEventListener("click", () => {
+                if (currentState === STATE_INPUT) {
+                    handleVerification();
+                } else if (currentState === STATE_SUCCESS) {
+                    resetForm();
+                }
+            });
+
+            // Verification Flow Trigger
+            function handleVerification() {
+                if (currentState !== STATE_INPUT) return;
+
+                const otp = getCurrentOtp();
+
+                // Validate 4 digits entered
+                if (otp.length < 4) {
+                    setFeedback("Please enter all 4 digits to proceed.");
+                    shakeCard();
+                    focusFirstEmpty();
+                    return;
+                }
+
+                // Transition to Loading State
+                setStateLoading();
+
+                // Simulate secure server validation delay
+                setTimeout(() => {
+                    if (otp === DEMO_OTP) {
+                        setStateSuccess();
+                    } else {
+                        setStateError("Invalid verification code. Please try again.");
+                    }
+                }, 1600);
+            }
+
+            // State: Loading
+            function setStateLoading() {
+                currentState = STATE_LOADING;
+                card.classList.add("is-loading");
+                card.classList.remove("is-success");
+
+                inputs.forEach(inp => inp.disabled = true);
+                submitBtn.disabled = true;
+                btnLabel.textContent = "Verifying Code...";
+                setFeedback("");
+
+                cardTitle.innerHTML = 'Verifying <span class="highlight">OTP...</span>';
+                cardSubtitle.textContent = "Securely confirming your security credentials";
+            }
+
+            // State: Success
+            function setStateSuccess() {
+                currentState = STATE_SUCCESS;
+                card.classList.remove("is-loading");
+                card.classList.add("is-success");
+
+                cardTitle.innerHTML = 'Verified <span class="highlight">Successfully</span>';
+                cardSubtitle.textContent = "Your security verification code has been confirmed";
+
+                btnLabel.textContent = "✔ Verified & Secured";
+                submitBtn.disabled = false;
+                setFeedback("");
+            }
+
+            // State: Error
+            function setStateError(message) {
+                currentState = STATE_INPUT;
+                card.classList.remove("is-loading");
+
+                inputs.forEach(inp => {
+                    inp.disabled = false;
+                    inp.value = "";
+                });
+                updateFilledStyles();
+
+                cardTitle.innerHTML = 'Verify <span class="highlight">OTP</span>';
+                cardSubtitle.textContent = "Enter the 4-digit security code sent to your device";
+
+                submitBtn.disabled = false;
+                btnLabel.textContent = "Verify & Proceed";
+
+                setFeedback(message, true);
+                shakeCard();
+                inputs[0].focus();
+            }
+
+            // Shake Effect
+            function shakeCard() {
+                card.classList.remove("shake");
+                void card.offsetWidth; // Trigger reflow
+                card.classList.add("shake");
+                setTimeout(() => card.classList.remove("shake"), 450);
+            }
+
+            // Countdown Timer Logic
+            function startTimer() {
+                clearInterval(countdownInterval);
+                countdownSeconds = 38;
+                updateTimerDisplay();
+                timerContainer.style.display = "inline";
+                resendBtn.style.display = "none";
+                resendBtn.disabled = true;
+
+                countdownInterval = setInterval(() => {
+                    countdownSeconds--;
+                    updateTimerDisplay();
+
+                    if (countdownSeconds <= 0) {
+                        clearInterval(countdownInterval);
+                        timerContainer.style.display = "none";
+                        resendBtn.style.display = "inline-block";
+                        resendBtn.disabled = false;
+                    }
+                }, 1000);
+            }
+
+            function updateTimerDisplay() {
+                const s = String(countdownSeconds).padStart(2, "0");
+                timerValue.textContent = `00:${s}`;
+            }
+
+            // Resend Click
+            resendBtn.addEventListener("click", () => {
+                if (currentState !== STATE_INPUT) return;
+                setFeedback("New security code sent to your registered device.", false);
+                startTimer();
+                inputs.forEach(inp => inp.value = "");
+                updateFilledStyles();
+                inputs[0].focus();
+            });
+
+            // Reset Form (for demo & replay)
+            function resetForm() {
+                currentState = STATE_INPUT;
+                card.classList.remove("is-loading", "is-success");
+                inputs.forEach(inp => {
+                    inp.disabled = false;
+                    inp.value = "";
+                });
+                updateFilledStyles();
+
+                cardTitle.innerHTML = 'Verify <span class="highlight">OTP</span>';
+                cardSubtitle.textContent = "Enter the 4-digit security code sent to your device";
+
+                submitBtn.disabled = false;
+                btnLabel.textContent = "Verify & Proceed";
+                setFeedback("");
+                startTimer();
+                inputs[0].focus();
+            }
+
+            if (resetBtn) {
+                resetBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    resetForm();
+                });
+            }
+
+            // Initialize on Load
+            startTimer();
+            if (inputs[0]) inputs[0].focus();
+
+        })();
+    </script>
+</body>
+
+</html>
